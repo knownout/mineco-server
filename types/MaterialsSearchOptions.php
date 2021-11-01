@@ -1,0 +1,50 @@
+<?php
+
+namespace Types;
+
+class MaterialsSearchOptions
+{
+    /**
+     * Specify a title of an material to search in database
+     * @var string|null
+     */
+    public ?string $title = null;
+
+    /**
+     * Specify the time to search for materials whose publication
+     * is greater than or equal to this
+     *
+     * If time_end is not specified, only search for greater
+     * or equal (> =) is performed
+     * @var int|null
+     */
+    public ?int $time_start = null;
+
+    /**
+     * Specify the time to search for materials whose publication
+     * is lower than or equal to this
+     * @var int|null
+     */
+    public ?int $time_end = null;
+
+    /**
+     * Specify the tag that materials should include
+     * @var string|null
+     */
+    public ?string $tag = null;
+
+    /**
+     * Specify material identifier
+     *
+     * all other variables will not take effect if this is enabled
+     * @var string[]|null
+     */
+    public ?array $identifiers = null;
+
+    /**
+     * Indicate the pinned state in which the materials should be
+     * @var bool|null
+     */
+    public ?bool $pinned = null;
+
+}

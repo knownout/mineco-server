@@ -1,11 +1,13 @@
 <?php
 
-require_once "server-config.php";
+namespace Workers;
+
+require_once "../server-config.php";
+require_once "DatabaseWorker.php";
+require_once "AccountsWorker.php";
+require_once "StandardLibrary.php";
 
 use Types\MaterialsSearchOptions;
-use Workers\AccountsWorker;
-use Workers\DatabaseWorker;
-use Workers\StandardLibrary;
 
 class MaterialsRequest extends DatabaseWorker
 {
@@ -45,10 +47,11 @@ class MaterialsRequest extends DatabaseWorker
     {
         $options = new MaterialsSearchOptions();
         $options->pinned = true;
+        $options->tag = "Новости";
 
-        StandardLibrary::returnJsonOutput(...$this->makeOutputArray(
-            parent::getMaterialsMeta($options, 1)
-        ));
+        $pinned = parent::getMaterialsMeta($options, 1, ["identifier", "title", "time"]);
+        if (count($pinned) < 1) return null;
+        else return $pinned[0];
     }
 
     /**
@@ -61,12 +64,34 @@ class MaterialsRequest extends DatabaseWorker
         $options = new MaterialsSearchOptions();
         $options->identifiers = $identifiers;
 
+        // FIXME: make this return value, not exit script
         StandardLibrary::returnJsonOutput(...$this->makeOutputArray(
             parent::getMaterialsMeta($options, $limit),
             0));
     }
 
-    // TODO: add method to get latest news with count getLatestNews($count, $excludePinned = true)
+    /**
+     * Get latest materials from database (sorted descending by time)
+     * @param string $tag tag of materials, if not set will be default news tag
+     * @param bool $find_pinned if true, answer may contain pinned articles too
+     * @param int $limit count of news to get
+     * @return mixed|null associative array of news
+     */
+    public function requestLatestMaterials (string $tag, bool $find_pinned = false, int $limit = 10)
+    {
+        // Setup options for search
+        $options = new MaterialsSearchOptions();
+        $options->tag = $tag;
+        $options->pinned = $find_pinned ? null : false;
+
+        // Get materials from database through db worker
+        $materials = parent::getMaterialsMeta($options, $limit, $find_pinned ? [] :
+            ["identifier", "title", "time", "tags"]);
+
+        // Return null if no materials found
+        if (count($materials) < 1) return null;
+        else return $materials;
+    }
 
     /**
      *                WRITE-ALLOWED SECTION

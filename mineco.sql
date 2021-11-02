@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: 127.0.0.1:3306
--- Время создания: Ноя 01 2021 г., 17:58
+-- Время создания: Ноя 02 2021 г., 17:56
 -- Версия сервера: 8.0.24
 -- Версия PHP: 7.4.21
 
@@ -40,9 +40,23 @@ CREATE TABLE `accounts` (
 --
 
 INSERT INTO `accounts` (`id`, `login`, `hash`, `full_name`, `active`) VALUES
-(1, 'root-admin@s1604', '02f8864b4b752b18fe12eee925434e28', 'Славинский Александр Романович', 1),
+(1, 'root-admin@s1604', '21232f297a57a5a743894a0e4a801fc3', 'Славинский Александр Романович', 1),
 (2, 'lobodyuk', '98870fd11944dafbda9ee89c4724b22b', 'Лободюк Ирина Леонтьевна', 1),
 (3, 'bondarenko', '2a5c21019981d6e80f5eac599d7b90f5', 'Бондаренко Сергей Николаевич', 1);
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `logs`
+--
+
+CREATE TABLE `logs` (
+  `id` int NOT NULL COMMENT 'identifier of operation',
+  `login` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT 'user login',
+  `action` enum('update','remove','login','password') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT 'the action that the user took',
+  `affect` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'operation timestamp'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 
 -- --------------------------------------------------------
 
@@ -63,7 +77,7 @@ CREATE TABLE `materials` (
 --
 
 INSERT INTO `materials` (`identifier`, `title`, `tags`, `time`, `pinned`) VALUES
-('6mu9en9e53', 'На сельхозпредприятиях Приднестровья проходят практику по программе «Мехатроник» 10 студентов', 'Новости', 1635777293954, 0),
+('6mu9en9e53', 'На сельхозпредприятиях Приднестровья проходят практику по программе «Мехатроник» 10 студентов', 'Новости, Документы', 1635777293954, 0),
 ('829bpeuwd4', 'Оперативная информация о ходе уборочной кампании по состоянию на 29 октября 2021 года', 'Новости', 1635777245229, 1),
 ('ewfj2snxc4', 'Представители ветеринарии Приднестровья приняли участие в IХ ежегодной Национальной ветеринарной конференции NVC-2021', 'Документы', 1635777245229, 0);
 
@@ -95,13 +109,21 @@ INSERT INTO `tags` (`identifier`, `name`, `display`) VALUES
 -- Индексы таблицы `accounts`
 --
 ALTER TABLE `accounts`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `login` (`login`);
+
+--
+-- Индексы таблицы `logs`
+--
+ALTER TABLE `logs`
   ADD PRIMARY KEY (`id`);
 
 --
 -- Индексы таблицы `materials`
 --
 ALTER TABLE `materials`
-  ADD PRIMARY KEY (`identifier`);
+  ADD PRIMARY KEY (`identifier`),
+  ADD UNIQUE KEY `identifier` (`identifier`);
 
 --
 -- Индексы таблицы `tags`
@@ -118,6 +140,12 @@ ALTER TABLE `tags`
 --
 ALTER TABLE `accounts`
   MODIFY `id` int NOT NULL AUTO_INCREMENT COMMENT 'identifcator of the account, used only by db', AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT для таблицы `logs`
+--
+ALTER TABLE `logs`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT COMMENT 'identifier of operation';
 
 --
 -- AUTO_INCREMENT для таблицы `tags`

@@ -7,14 +7,21 @@ require_once "../server-config.php";
 use Types\MaterialsSearchOptions;
 use mysqli;
 
+/**
+ * Worker for connecting to database and execute specific to
+ * current project queries
+ * @package Workers
+ */
 class DatabaseWorker
 {
-    private mysqli $connection;
+    protected mysqli $connection;
     public ?string $connection_error = null;
 
     protected function __construct ()
     {
         $this->connection = new mysqli(...array_values(DatabaseOptions));
+        $this->connection->character_set_name();
+
         if ($this->connection->connect_error)
             $this->connection_error = $this->connection->connect_error;
     }
@@ -23,7 +30,7 @@ class DatabaseWorker
      * Method to get all displayed tags
      * @return array tags with display = 1 or null if connection error
      */
-    public function getTagsList ()
+    protected function getTagsList ()
     {
         if ($this->connection_error) return null;
 
@@ -45,7 +52,7 @@ class DatabaseWorker
      * @param array $columns specify columns to retrieve from db
      * @return mixed assoc array of the materials or null if connection error
      */
-    public function getMaterialsMeta (MaterialsSearchOptions $searchOptions, int $limit = 0, array $columns = [])
+    protected function getMaterialsMeta (MaterialsSearchOptions $searchOptions, int $limit = 0, array $columns = [])
     {
         $queryString = [];
 
@@ -54,11 +61,9 @@ class DatabaseWorker
         // Parse options object
 
         // If identifiers list set, do not parse other options
-        if (isset($searchOptions->identifiers))
-        {
-            foreach ($searchOptions->identifiers as $identifier)
-                array_push($queryString, "identifier='{$identifier}'");
-        } else
+        if (isset($searchOptions->identifier))
+            array_push($queryString, "identifier='{$searchOptions->identifier}'");
+        else
         {
             // Parse options without identifiers list
             if (isset($searchOptions->pinned))
@@ -68,33 +73,34 @@ class DatabaseWorker
                 array_push($queryString, "tags like '%{$searchOptions->tag}%'");
 
             if (isset($searchOptions->time_start))
-                array_push($queryString, "time>={$searchOptions->time_start}");
+                array_push($queryString, "time>=" . (int)$searchOptions->time_start);
 
             if (isset($searchOptions->time_end))
-                array_push($queryString, "time<{$searchOptions->time_end}");
+                array_push($queryString, "time<" . (int)$searchOptions->time_end);
 
             if (isset($searchOptions->title))
-                array_push($queryString, "title like '%{$searchOptions->title}%'");
+                array_push($queryString, "title like '%{$this->connection->real_escape_string($searchOptions->title)}%'");
         }
 
         // Specify column selector as * if other not provided by user
         $columnsList = "*";
 
         // Specify user-provided columns
-        if(isset($columns) and count($columns) > 0) $columnsList = trim(join(", ", $columns));
+        if (isset($columns) and count($columns) > 0) $columnsList = trim(join(", ", $columns));
 
         // Query base string
         $query = "SELECT {$columnsList} FROM materials";
 
         // Add options parse result to base query string
-        if(count($queryString) > 1) $query = $query . " WHERE " . join(" AND ", $queryString);
-        else if(count($queryString) == 1) $query = $query . " WHERE " . $queryString[0];
+        if (count($queryString) > 1) $query = $query . " WHERE " . join(" AND ", $queryString);
+        else if (count($queryString) == 1) $query = $query . " WHERE " . $queryString[0];
 
         // Order materials by time
         $query .= " ORDER BY time DESC";
 
         // If limit provided, set it
         if ($limit > 0) $query .= " LIMIT {$limit}";
+//        $query = $this->connection->real_escape_string($query);
 
         // Execute and return query
         return $this->connection->query(trim($query))->fetch_all(MYSQLI_ASSOC);
@@ -108,12 +114,15 @@ class DatabaseWorker
     protected function getAccountData ($login)
     {
         if ($this->connection_error) return null;
+        $login = $this->connection->real_escape_string($login);
 
         // Get specified account data from db
-        $result = $this->connection->query("SELECT * FROM accounts WHERE login='{$login}'");
+        $result = $this->connection->query(
+            "SELECT * FROM accounts WHERE login='{$login}'")->fetch_all(MYSQLI_ASSOC
+        );
 
         // If account not exist, return null
-        if (is_bool($result) || count((array) $result) < 1) return null;
+        if (is_bool($result) || count((array)$result) < 1) return null;
 
         return $result[0];
     }

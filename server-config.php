@@ -9,4 +9,4 @@ const DatabaseOptions = [
 ];
 
 global $MaterialsPath;
-$MaterialsPath =  join(DIRECTORY_SEPARATOR, [$_SERVER["DOCUMENT_ROOT"], "user-content", ""]);
+$MaterialsPath = join(DIRECTORY_SEPARATOR, [$_SERVER["DOCUMENT_ROOT"], "user-content", ""]);

@@ -2,6 +2,10 @@
 
 namespace Types;
 
+/**
+ * Container for database search options
+ * @package Types
+ */
 class MaterialsSearchOptions
 {
     /**
@@ -37,9 +41,9 @@ class MaterialsSearchOptions
      * Specify material identifier
      *
      * all other variables will not take effect if this is enabled
-     * @var string[]|null
+     * @var string|null
      */
-    public ?array $identifiers = null;
+    public ?string $identifier = null;
 
     /**
      * Indicate the pinned state in which the materials should be

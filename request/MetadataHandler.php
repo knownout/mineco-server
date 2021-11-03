@@ -1,23 +1,23 @@
 <?php
 
-require_once "../workers/MaterialsRequest.php";
-require_once "../workers/StandardLibrary.php";
+require_once "../controllers/MaterialRequestController.php";
+require_once "../controllers/StandardLibrary.php";
 require_once "../types/RequestTypesList.php";
-require_once "../types/MaterialsSearchOptions.php";
+require_once "../types/MaterialSearchOptions.php";
 
-use Types\MaterialsSearchOptions;
-use Workers\MaterialsRequest;
-use Workers\StandardLibrary;
+use Types\MaterialSearchOptions;
+use Controllers\MaterialRequestController;
+use Controllers\StandardLibrary;
 use Types\RequestTypesList;
 
-class RequestHeadersHandler extends MaterialsRequest
+class MetadataHandler extends MaterialRequestController
 {
     /**
      * Get data from $_POST request
      * @param string $request RequestTypesList constant
      * @return mixed|null value or null
      */
-    public static function getPostRequest (string $request)
+    public static function requestData (string $request)
     {
         return isset($_POST[$request]) ? $_POST[$request] : null;
     }
@@ -30,7 +30,7 @@ class RequestHeadersHandler extends MaterialsRequest
     /**
      * Return all tags list as request output
      */
-    public function getTagsList ()
+    public function getTags ()
     {
         StandardLibrary::returnJsonOutput(true, parent::getTagsList());
     }
@@ -60,7 +60,7 @@ class RequestHeadersHandler extends MaterialsRequest
     public function getMaterials ()
     {
         // Shortcuts for necessary functions
-        $post = fn(string $req) => RequestHeadersHandler::getPostRequest($req);
+        $post = fn(string $req) => MetadataHandler::requestData($req);
         $escape = fn(string $str) => $this->connection->real_escape_string($str);
 
         // Retrieving data from $_POST requests
@@ -72,20 +72,26 @@ class RequestHeadersHandler extends MaterialsRequest
         $timeStart = $post(RequestTypesList::DataTimeStart);
         $timeEnd = $post(RequestTypesList::DataTimeEnd);
 
+        $identifier = $post(RequestTypesList::DataIdentifier);
+
         // Check if limit is specified and safely convert limit value to integer
         $limit = is_null($limit) ? null : (int)$escape($limit);
 
         // Create search parameters container
-        $options = new MaterialsSearchOptions();
+        $options = new MaterialSearchOptions();
         $options->pinned = is_null($findPinned) ? false : ($findPinned == "true" ? null : false);
 
         // Add request parameters to search parameters object with escaping strings
-        if (!is_null($title)) $options->title = $escape($title);
-        if (!is_null($timeStart)) $options->time_start = (int)$escape($timeStart);
-        if (!is_null($timeEnd)) $options->time_end = (int)$escape($timeEnd);
-        if (!is_null($tag)) $options->tag = $escape($tag);
+        if (!is_null($identifier)) $options->identifier = $escape($identifier);
+        else
+        {
+            if (!is_null($title)) $options->title = $escape($title);
+            if (!is_null($timeStart)) $options->time_start = (int)$escape($timeStart);
+            if (!is_null($timeEnd)) $options->time_end = (int)$escape($timeEnd);
+            if (!is_null($tag)) $options->tag = $escape($tag);
+        }
 
-        $materials = parent::requestLatestMaterials($options, $limit);
+        $materials = parent::requestMaterials($options, $limit);
         if (is_null($materials)) StandardLibrary::returnJsonOutput(false, "no materials found");
 
         StandardLibrary::returnJsonOutput(true, $materials);

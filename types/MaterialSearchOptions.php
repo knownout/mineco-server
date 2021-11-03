@@ -6,7 +6,7 @@ namespace Types;
  * Container for database search options
  * @package Types
  */
-class MaterialsSearchOptions
+class MaterialSearchOptions
 {
     /**
      * Specify a title of an material to search in database

@@ -1,10 +1,10 @@
 <?php
 
-namespace Workers;
+namespace Controllers;
 
 require_once "../server-config.php";
 
-use Types\MaterialsSearchOptions;
+use Types\MaterialSearchOptions;
 use mysqli;
 
 /**
@@ -12,7 +12,7 @@ use mysqli;
  * current project queries
  * @package Workers
  */
-class DatabaseWorker
+class DatabaseController
 {
     protected mysqli $connection;
     public ?string $connection_error = null;
@@ -28,14 +28,18 @@ class DatabaseWorker
 
     /**
      * Method to get all displayed tags
+     * @param string $filter
      * @return array tags with display = 1 or null if connection error
      */
-    protected function getTagsList ()
+    protected function getTagsList (?string $filter = "")
     {
         if ($this->connection_error) return null;
 
         // Get all tags from database
-        $result = $this->connection->query("SELECT name FROM tags WHERE display=1")->fetch_all();
+        $result = $this->connection->query(
+            "SELECT name FROM tags WHERE display=1" . ($filter || "")
+        )->fetch_all();
+
         $tagsList = [];
 
         // Set tags as simple string array
@@ -47,12 +51,12 @@ class DatabaseWorker
 
     /**
      * Search in database for material
-     * @param MaterialsSearchOptions $searchOptions constructor for search options
+     * @param MaterialSearchOptions $searchOptions constructor for search options
      * @param int $limit if more than 0 limits count of selecting materials
      * @param array $columns specify columns to retrieve from db
      * @return mixed assoc array of the materials or null if connection error
      */
-    protected function getMaterialsMeta (MaterialsSearchOptions $searchOptions, int $limit = 0, array $columns = [])
+    protected function getMaterialsMeta (MaterialSearchOptions $searchOptions, int $limit = 0, array $columns = [])
     {
         $queryString = [];
 

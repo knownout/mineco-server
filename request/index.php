@@ -1,30 +1,30 @@
 <?php
 
-require_once "RequestHeadersHandler.php";
-require_once "RequestUpdateHandler.php";
+require_once "MetadataHandler.php";
+require_once "ModificationHandler.php";
 require_once "../types/RequestActionsList.php";
 
 use Types\RequestActionsList;
 use Types\RequestTypesList;
-use Workers\StandardLibrary;
+use Controllers\StandardLibrary;
 
-$request = RequestHeadersHandler::getPostRequest(RequestTypesList::Action);
+$request = MetadataHandler::requestData(RequestTypesList::Action);
 $account = [
-    "login" => RequestHeadersHandler::getPostRequest(RequestTypesList::AccountLogin),
-    "hash" => RequestHeadersHandler::getPostRequest(RequestTypesList::AccountHash)
+    "login" => MetadataHandler::requestData(RequestTypesList::AccountLogin),
+    "hash" => MetadataHandler::requestData(RequestTypesList::AccountHash)
 ];
 
 // If no request specified, return error
 if (is_null($request)) StandardLibrary::returnJsonOutput(false, "request not specified");
-$headerHandler = new RequestHeadersHandler();
-$updateHandler = new RequestUpdateHandler();
+$headerHandler = new MetadataHandler();
+$updateHandler = new ModificationHandler();
 
 switch ($request)
 {
     /** READ-ONLY SECTION */
     // Request all tags list from database
     case RequestActionsList::getTagsList:
-        return $headerHandler->getTagsList();
+        return $headerHandler->getTags();
 
     // Request one latest pinned material from db descending sorted by time
     case RequestActionsList::getPinnedMaterial:

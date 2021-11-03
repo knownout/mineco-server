@@ -1,14 +1,14 @@
 <?php
 
-namespace Workers;
+namespace Controllers;
 
-require_once "DatabaseWorker.php";
+require_once "DatabaseController.php";
 
 /**
  * Class for logging actions like password change, material update & remove
  * @package Workers
  */
-class Logger extends DatabaseWorker
+class LogController extends DatabaseController
 {
     public const PasswordChange = 0;
     public const MaterialUpdate = 1;
@@ -21,7 +21,7 @@ class Logger extends DatabaseWorker
 
     /**
      * Saves action to the database
-     * @param int $action action type (Logger::Constant)
+     * @param int $action action type (LogController::Constant)
      * @param string $login user login
      * @param string $affect affected object identifier (login for account)
      */

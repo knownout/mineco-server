@@ -1,10 +1,10 @@
 <?php
 
-namespace Workers;
+namespace Controllers;
 
 use mysqli_result;
 
-class AccountsWorker extends DatabaseWorker
+class AccountsController extends DatabaseController
 {
     public function __construct ()
     {

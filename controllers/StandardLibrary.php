@@ -1,6 +1,6 @@
 <?php
 
-namespace Workers;
+namespace Controllers;
 
 class StandardLibrary
 {

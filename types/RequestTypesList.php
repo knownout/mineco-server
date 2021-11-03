@@ -14,7 +14,12 @@ class RequestTypesList {
     public const DataTitle = "Data:Title";
     public const DataTimeStart = "Data:TimeStart";
     public const DataTimeEnd = "Data:TimeEnd";
+    public const DataIdentifier = "Data:Identifier";
 
     public const UpdateIdentifier = "Update:Identifier";
     public const UpdateContent = "Update:Content";
+    public const UpdatePinned = "Update:Pinned";
+    public const UpdateTitle = "Update:Title";
+    public const UpdateTime = "Update:Time";
+    public const UpdateTags = "Update:Tags";
 }

@@ -4,10 +4,11 @@ require_once "../types/RequestTypesList.php";
 require_once "../controllers/AccountsController.php";
 require_once "../controllers/StandardLibrary.php";
 require_once "../controllers/LogController.php";
+require_once "../controllers/FileController.php";
 require_once "../server-config.php";
 
+use Controllers\FileController;
 use Controllers\MaterialRequestController;
-use Types\MaterialSearchOptions;
 use Types\RequestTypesList;
 use Controllers\AccountsController;
 use Controllers\StandardLibrary;
@@ -86,7 +87,7 @@ class ModificationHandler extends AccountsController
      * Update material db entry (for time, title, identifier and tags) and
      * files on drive (content file, preview, images, files)
      */
-    public function updateMaterial () // FIXME only database modification implemented, no server files affect yet
+    public function updateMaterial () // FIXME file and image loading testing needed, especially image scaling
     {
         // Shortcut for mysqli string escape function
         $escape = fn(string $str) => $this->connection->real_escape_string($str);
@@ -98,7 +99,6 @@ class ModificationHandler extends AccountsController
         $newIdentifier = $this->post(RequestTypesList::UpdateIdentifier);
 
         // Modified data of content.json file (just rewrite server file)
-        // FIXME not implemented
         $content = $this->post(RequestTypesList::UpdateContent);
 
         // Metadata values receiving
@@ -148,6 +148,9 @@ class ModificationHandler extends AccountsController
             // Update database and local state
             $updateState["identifier"] =
                 $this->updateState($identifier, "identifier='{$escape($newIdentifier)}'");
+
+            $material["identifier"] = $newIdentifier;
+            $identifier = $newIdentifier;
         }
 
         // If title changed (mostly like identifier change)
@@ -167,16 +170,19 @@ class ModificationHandler extends AccountsController
             // Update database and local state (same as identifier update)
             $updateState["title"] =
                 $this->updateState($identifier, "title='{$escape($title)}'");
+
+            $material["title"] = $title;
         }
 
         // Update tags (custom expression for detect tags even if they written without space after comma)
-        if ($allow(preg_replace(["/,/", "/\s{2,}/"], [", ", " "], $tags), "tags"))
+        if (strlen(trim($tags)) > 0 and $allow(preg_replace(["/,/", "/\s{2,}/"], [", ", " "], $tags), "tags"))
         {
             // Explode and trim tags list (to remove extra spaces) and then join with ", "
             $tags = join(", ", array_map(fn($i) => $escape(trim($i)), explode(",", $tags)));
 
             // Update db and local state
             $updateState["tags"] = $this->updateState($identifier, "tags='{$tags}'");
+            $material["tags"] = $tags;
         }
 
         // If material pinned state changed
@@ -191,23 +197,125 @@ class ModificationHandler extends AccountsController
 
             // Update db and local state
             $updateState["pinned"] = $this->updateState($identifier, "pinned={$pinState}");
+            $material["pinned"] = $pinState;
         }
 
         // If material time changed
         if ($allow($time, "time") and $time > 0)
-            $updateState["time"] = $this->updateState($identifier, "time='{$time}'");
+        {
+            $updateState["time"] = $this->updateState($identifier, "time={$time}");
+            $material["time"] = $time;
+        }
 
         // Parse files list for this material
-        // FIXME not implemented
-        $filesList = [];
-        foreach ($_FILES as $file)
-            array_push($filesList, $file);
+        if (!is_null($content))
+        {
+            global $MaterialsPath;
+            $materialPath = $MaterialsPath . $material["identifier"] . DIRECTORY_SEPARATOR;
 
-        // Get material metadata
-        // FIXME maybe repeated parsing not necessary?
-        $options = new MaterialSearchOptions();
-        $options->identifier = is_null($newIdentifier) ? $identifier : $newIdentifier;
+            $removeDirectory = FileController::removeDirectory($materialPath, false);
 
+            // If exception while removing content folder from disk, skip files modification
+            if ($removeDirectory == FileController::RemovingException)
+                $updateState["content"] = "Root directory remove exception";
+            else
+            {
+                global $ImageQuality, $ImageSize;
+
+                // Read file content as json object (decode)
+                $contentData = FileController::decodeJsonString($content);
+
+                // Check if file contains blocks section
+                if (!property_exists($contentData, "blocks"))
+                    $updateState["content"] = "Invalid content file";
+                else
+                {
+                    foreach ($contentData["blocks"] as $block)
+                    {
+                        mkdir($materialPath);
+                        $type = $block["type"];
+
+                        // If type is not image or attaches, skip block
+                        if (!in_array(["image", "attaches"], $type)) continue;
+
+                        // Get file identifier from url property (set-up at front-end code)
+                        $fileIdentifier = $contentData["blocks"][$block]["data"]["file"]["url"];
+
+                        // Get file object from $_FILES
+                        $file = $_FILES[$fileIdentifier];
+
+                        // If file not set, remove this block and skip
+                        if (!isset($file))
+                        {
+                            unset($contentData["block"][$block]);
+                            continue;
+                        }
+
+                        // Make relative path to files container for current type
+                        $filePath = $materialPath . $type == "image" ? "images" : "files"
+                            . DIRECTORY_SEPARATOR . $file["name"];
+
+                        // Try to move file to destination, if exception, remove block and skip
+                        if (!move_uploaded_file($file["tmp_name"], $filePath))
+                        {
+                            unset($contentData["block"][$block]);
+                            continue;
+                        }
+
+                        // If file type is image, resize it to (max) HD size
+                        if ($type == "image") FileController::resizeImage(
+                            $filePath, $filePath, $ImageSize[0], $ImageSize[1], $ImageQuality
+                        );
+
+                        // Make link to server-side handlers for download or get files/images
+                        $handler = $type == "image" ? "image" : "download";
+
+                        // Replace block url property
+                        $contentData["block"][$block]["data"]["file"]["url"] = "/request/attachments/"
+                            . "{$handler}.php?material={$identifier}&attachment={$file["name"]}";
+                    }
+
+                    // If preview specified, upload all types of preview
+                    if (isset($_FILES["preview"]))
+                    {
+                        // Move original file
+                        move_uploaded_file(
+                            $_FILES["preview"]["tmp_name"],
+                            $materialPath . "preview" . DIRECTORY_SEPARATOR . "preview-original.jpg"
+                        );
+
+                        $preview = $materialPath . "preview" . DIRECTORY_SEPARATOR . "preview-original.jpg";
+                        FileController::removeImageExifData($preview, $ImageQuality);
+
+                        $previewDirectory = $materialPath . "preview" . DIRECTORY_SEPARATOR;
+                        $path = fn($i) => "{$previewDirectory}preview{$i}.jpg";
+
+                        // Create preview for open graph
+                        FileController::resizeImage(
+                            $preview, $path("-og"), 480, 270, $ImageQuality
+                        );
+
+                        // Create preview for title page
+                        FileController::resizeImage(
+                            $preview, $path("-large"), 300, 400, $ImageQuality
+                        );
+
+                        // Create preview for materials list
+                        FileController::resizeImage(
+                            $preview, $path("-tile"), 256, 256, $ImageQuality
+                        );
+                    }
+
+                    // Encode affected object to string and rewrite content file
+                    $contentString = FileController::encodeJsonString($contentData);
+                    file_put_contents($materialPath . "content.json", $contentString);
+
+                    $updateState["content"] = true;
+                }
+            }
+        }
+
+        // Save action to database
         $this->logger->saveAction(
             LogController::MaterialUpdate,
             $login,
@@ -215,7 +323,7 @@ class ModificationHandler extends AccountsController
         );
 
         StandardLibrary::returnJsonOutput(true, [
-            "material" => $this->controller->getMaterialsMeta($options, 1),
+            "material" => $material,
             "affect" => $updateState
         ]);
     }
@@ -236,31 +344,15 @@ class ModificationHandler extends AccountsController
         $materialPath = $MaterialsPath . $identifier . DIRECTORY_SEPARATOR;
 
         $this->connection->query("DELETE FROM materials WHERE identifier='{$identifier}'");
-        if (!is_dir($materialPath)) StandardLibrary::returnJsonOutput(false, "material not found");
 
-        try
+        $removeDirectory = FileController::removeDirectory($materialPath);
+        if ($removeDirectory == FileController::DirectoryNotExist)
+            StandardLibrary::returnJsonOutput(false, "material not found");
+
+        if ($removeDirectory == FileController::Successful)
         {
-            $it = new RecursiveDirectoryIterator($materialPath, RecursiveDirectoryIterator::SKIP_DOTS);
-            $files = new RecursiveIteratorIterator($it,
-                RecursiveIteratorIterator::CHILD_FIRST);
-
-            foreach ($files as $file)
-            {
-                if ($file->isDir()) rmdir($file->getRealPath());
-                else unlink($file->getRealPath());
-            }
-
             $this->logger->saveAction(LogController::MaterialRemove, $login, $identifier);
-        } catch (Exception $e)
-        {
-            StandardLibrary::returnJsonOutput(false, "recursive files remove error");
-        }
-
-        $removeDirectory = rmdir($materialPath);
-        StandardLibrary::returnJsonOutput(
-            $removeDirectory, $removeDirectory ?
-            "material removed" :
-            "material root folder not removed"
-        );
+            StandardLibrary::returnJsonOutput(true, "material removed");
+        } else StandardLibrary::returnJsonOutput(false, "material not removed");
     }
 }

@@ -47,8 +47,6 @@ class MaterialRequestController extends DatabaseController
         $options = new MaterialSearchOptions();
         $options->identifier = $identifier;
 
-        // FIXME: make this return value, not exit script
-
         $result = parent::getMaterialsMeta($options, 1);
 
         if (count($result) > 0) return $result[0];

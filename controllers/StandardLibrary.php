@@ -21,10 +21,10 @@ class StandardLibrary
      */
     public static function makeJsonOutput (bool $success, $meta)
     {
-        return json_encode([
+        return FileController::encodeJsonString([
             "success" => $success,
             "meta" => $meta
-        ], JSON_UNESCAPED_UNICODE + JSON_UNESCAPED_SLASHES + JSON_PRETTY_PRINT);
+        ]);
     }
 
     /**

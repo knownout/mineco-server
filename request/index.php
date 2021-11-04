@@ -2,11 +2,13 @@
 
 require_once "MetadataHandler.php";
 require_once "ModificationHandler.php";
+require_once "FilesHandler.php";
+
 require_once "../types/RequestActionsList.php";
 
+use Controllers\StandardLibrary;
 use Types\RequestActionsList;
 use Types\RequestTypesList;
-use Controllers\StandardLibrary;
 
 $request = MetadataHandler::requestData(RequestTypesList::Action);
 $account = [
@@ -17,7 +19,8 @@ $account = [
 // If no request specified, return error
 if (is_null($request)) StandardLibrary::returnJsonOutput(false, "request not specified");
 $headerHandler = new MetadataHandler();
-$updateHandler = new ModificationHandler();
+$modificationHandler = new ModificationHandler();
+$filesHandler = new FilesHandler();
 
 switch ($request)
 {
@@ -37,15 +40,28 @@ switch ($request)
     /** READ-WRITE SECTION */
     // Update material on server with client data
     case RequestActionsList::updateMaterial:
-        return $updateHandler->updateMaterial();
+        return $modificationHandler->updateMaterial();
 
     case RequestActionsList::removeMaterial:
-        return $updateHandler->removeMaterial();
+        return $modificationHandler->removeMaterial();
 
     /** ACCOUNTS READ-WRITE SECTION */
     // Change account password
     case RequestActionsList::changePassword:
-        return $updateHandler->changePassword();
+        return $modificationHandler->changePassword();
+
+    /** FILES UPLOAD SECTION */
+    case RequestActionsList::uploadImage:
+        return $filesHandler->uploadFile();
+
+    case RequestActionsList::uploadFile:
+        return $filesHandler->uploadImage();
+
+    case RequestActionsList::getFilesList:
+        return $filesHandler->getFilesList(false);
+
+    case RequestActionsList::getImagesList:
+        return $filesHandler->getFilesList(true);
 
     /** UNKNOWN REQUESTS HANDLER */
     // Return error if undefined request name

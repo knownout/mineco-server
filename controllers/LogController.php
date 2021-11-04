@@ -46,7 +46,7 @@ class LogController extends DatabaseController
                 break;
         }
 
-        if(strlen($actionString) > 1) $this->connection->query(
+        if (strlen($actionString) > 1) $this->connection->query(
             "INSERT INTO logs (login, action, affect) VALUES ('{$login}','{$actionString}','{$affect}')"
         );
     }

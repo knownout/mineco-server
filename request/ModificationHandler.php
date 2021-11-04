@@ -7,31 +7,18 @@ require_once "../controllers/LogController.php";
 require_once "../controllers/FileController.php";
 require_once "../server-config.php";
 
-use Controllers\FileController;
-use Controllers\MaterialRequestController;
-use Types\RequestTypesList;
 use Controllers\AccountsController;
-use Controllers\StandardLibrary;
+use Controllers\FileController;
 use Controllers\LogController;
+use Controllers\MaterialRequestController;
+use Controllers\StandardLibrary;
+use Types\RequestTypesList;
 
 
 class ModificationHandler extends AccountsController
 {
     private LogController $logger;
     private MaterialRequestController $controller;
-
-    /**
-     * Verify is account data is valid
-     * @return array verification result
-     */
-    private function verifyAuthentication ()
-    {
-        $login = MetadataHandler::requestData(RequestTypesList::AccountLogin);
-        $hash = MetadataHandler::requestData(RequestTypesList::AccountHash);
-
-        if (is_null($login) or is_null($hash)) return [ false, $login, $hash ];
-        return [ parent::compareAccountData($login, $hash), $login, $hash ];
-    }
 
     public function __construct ()
     {
@@ -47,7 +34,7 @@ class ModificationHandler extends AccountsController
     {
         // Get data from $_POST request
         $newHash = MetadataHandler::requestData(RequestTypesList::AccountNewHash);
-        [ $verification, $login, $hash ] = $this->verifyAuthentication();
+        [ $verification, $login, $hash ] = parent::verifyWithPostData();
 
         // Check if authentication data provided
         if (!$verification)
@@ -74,7 +61,7 @@ class ModificationHandler extends AccountsController
     public function updateMaterial ()
     {
         // Verify authentication data
-        [ $verification, $login ] = $this->verifyAuthentication();
+        [ $verification, $login ] = parent::verifyWithPostData();
         if (!$verification) StandardLibrary::returnJsonOutput(false, "auth data invalid");
 
         // Get identifier of the affected material
@@ -197,7 +184,7 @@ class ModificationHandler extends AccountsController
     public function removeMaterial ()
     {
         $identifier = MetadataHandler::requestData(RequestTypesList::DataIdentifier);
-        [ $verification, $login ] = $this->verifyAuthentication();
+        [ $verification, $login ] = parent::verifyWithPostData();
 
         if (!$verification) StandardLibrary::returnJsonOutput(false, "auth data invalid");
 

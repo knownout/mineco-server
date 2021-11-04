@@ -5,23 +5,13 @@ require_once "../controllers/StandardLibrary.php";
 require_once "../types/RequestTypesList.php";
 require_once "../types/MaterialSearchOptions.php";
 
-use Types\MaterialSearchOptions;
 use Controllers\MaterialRequestController;
 use Controllers\StandardLibrary;
+use Types\MaterialSearchOptions;
 use Types\RequestTypesList;
 
 class MetadataHandler extends MaterialRequestController
 {
-    /**
-     * Get data from $_POST request
-     * @param string $request RequestTypesList constant
-     * @return mixed|null value or null
-     */
-    public static function requestData (string $request)
-    {
-        return isset($_POST[$request]) ? $_POST[$request] : null;
-    }
-
     public function __construct ()
     {
         parent::__construct();
@@ -95,6 +85,16 @@ class MetadataHandler extends MaterialRequestController
         if (is_null($materials)) StandardLibrary::returnJsonOutput(false, "no materials found");
 
         StandardLibrary::returnJsonOutput(true, $materials);
+    }
+
+    /**
+     * Get data from $_POST request
+     * @param string $request RequestTypesList constant
+     * @return mixed|null value or null
+     */
+    public static function requestData (string $request)
+    {
+        return isset($_POST[$request]) ? $_POST[$request] : null;
     }
 }
 

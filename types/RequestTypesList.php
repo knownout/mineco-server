@@ -2,7 +2,8 @@
 
 namespace Types;
 
-class RequestTypesList {
+class RequestTypesList
+{
     public const Action = "Request:Action";
     public const AccountLogin = "Account:Login";
     public const AccountHash = "Account:Hash";

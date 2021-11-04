@@ -4,8 +4,8 @@ namespace Controllers;
 
 require_once "../server-config.php";
 
-use Types\MaterialSearchOptions;
 use mysqli;
+use Types\MaterialSearchOptions;
 
 /**
  * Worker for connecting to database and execute specific to
@@ -14,8 +14,8 @@ use mysqli;
  */
 class DatabaseController
 {
-    protected mysqli $connection;
     public ?string $connection_error = null;
+    protected mysqli $connection;
 
     protected function __construct ()
     {

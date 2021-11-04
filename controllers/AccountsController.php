@@ -2,26 +2,18 @@
 
 namespace Controllers;
 
+require_once "../request/MetadataHandler.php";
+require_once "../types/RequestTypesList.php";
+
+use MetadataHandler;
 use mysqli_result;
+use Types\RequestTypesList;
 
 class AccountsController extends DatabaseController
 {
     public function __construct ()
     {
         parent::__construct();
-    }
-
-    /**
-     * Compare given account data with database entry
-     * @param string $login user login
-     * @param string $hash password md5 hash
-     * @return bool compare result
-     */
-    protected function compareAccountData (string $login, string $hash)
-    {
-        $account = parent::getAccountData($login);
-        if (is_null($account) or $account["hash"] != $hash) return false;
-        else return true;
     }
 
     /**
@@ -41,5 +33,31 @@ class AccountsController extends DatabaseController
 
         $query = "UPDATE accounts SET hash='{$newHash}' WHERE login='{$login}' LIMIT 1";
         return $this->connection->query($query);
+    }
+
+    /**
+     * Compare given account data with database entry
+     * @param string $login user login
+     * @param string $hash password md5 hash
+     * @return bool compare result
+     */
+    protected function compareAccountData (string $login, string $hash)
+    {
+        $account = parent::getAccountData($login);
+        if (is_null($account) or $account["hash"] != $hash) return false;
+        else return true;
+    }
+
+    /**
+     * Verify is account data is valid
+     * @return array verification result
+     */
+    protected function verifyWithPostData ()
+    {
+        $login = MetadataHandler::requestData(RequestTypesList::AccountLogin);
+        $hash = MetadataHandler::requestData(RequestTypesList::AccountHash);
+
+        if (is_null($login) or is_null($hash)) return [ false, $login, $hash ];
+        return [ $this->compareAccountData($login, $hash), $login, $hash ];
     }
 }

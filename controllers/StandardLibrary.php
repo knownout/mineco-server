@@ -14,20 +14,6 @@ class StandardLibrary
     }
 
     /**
-     * Create JSON string in API output style
-     * @param bool $success request state
-     * @param mixed $meta answer data
-     * @return false|string json output
-     */
-    public static function makeJsonOutput (bool $success, $meta)
-    {
-        return FileController::encodeJsonString([
-            "success" => $success,
-            "meta" => $meta
-        ]);
-    }
-
-    /**
      * Runs makeJsonOutput, then set content header and exit
      * @param bool $success request state
      * @param mixed $meta answer data
@@ -64,5 +50,19 @@ class StandardLibrary
 
             exit(0);
         }
+    }
+
+    /**
+     * Create JSON string in API output style
+     * @param bool $success request state
+     * @param mixed $meta answer data
+     * @return false|string json output
+     */
+    public static function makeJsonOutput (bool $success, $meta)
+    {
+        return FileController::encodeJsonString([
+            "success" => $success,
+            "meta" => $meta
+        ]);
     }
 }

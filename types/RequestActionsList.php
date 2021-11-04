@@ -29,4 +29,17 @@ class RequestActionsList
     // Accounts read-write requests (auth required)
     /** @var string change account password */
     public const changePassword = "5";
+
+    // Files upload requests (auth required)
+    /** @var string upload image (jpeg, view & download) */
+    public const uploadImage = "6";
+
+    /** @var string upload file (any, download only) */
+    public const uploadFile = "7";
+
+    /** @var string get list of files from local storage file system */
+    public const getFilesList = "8";
+
+    /** @var string get list images (same as getFilesList) */
+    public const getImagesList = "9";
 }

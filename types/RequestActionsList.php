@@ -17,7 +17,7 @@ class RequestActionsList
     public const getPinnedMaterial = "1";
 
     /** @var string request several latest materials from database */
-    public const getLatestMaterials = "2";
+    public const getMaterials = "2";
 
     // Read-write requests (auth required)
     /** @var string update material at the server from client data */

@@ -119,7 +119,50 @@ class FileController
     }
 
     /**
-     * Example
-     * resizeImage('image.jpg', 'resized.jpg', 200, 200);
+     * Parse and validate json string
+     * @param string $json json data string
+     * @return true|string true if successfully parsed
      */
+    public static function validateJson (string $json)
+    {
+        // decode the JSON data
+        json_decode($json);
+
+        // switch and check possible JSON errors
+        switch (json_last_error())
+        {
+            case JSON_ERROR_NONE:
+                return true;
+
+            case JSON_ERROR_DEPTH:
+                return "the maximum stack depth has been exceeded";
+
+            case JSON_ERROR_STATE_MISMATCH:
+                return "invalid or malformed json";
+
+            case JSON_ERROR_CTRL_CHAR:
+                return "control character error, possibly incorrectly encoded";
+
+            case JSON_ERROR_SYNTAX:
+                return "syntax error because malformed json";
+
+            // PHP >= 5.3.3
+            case JSON_ERROR_UTF8:
+                return "malformed utf8 characters, possibly incorrectly encoded";
+
+            // PHP >= 5.5.0
+            case JSON_ERROR_RECURSION:
+                return "one or more recursive references in the value to be encoded";
+
+            // PHP >= 5.5.0
+            case JSON_ERROR_INF_OR_NAN:
+                return "one or more nan or inf values in the value to be encoded";
+
+            case JSON_ERROR_UNSUPPORTED_TYPE:
+                return "a value of a type that cannot be encoded was given";
+
+            default:
+                return "unknown json error occurred";
+        }
+    }
 }

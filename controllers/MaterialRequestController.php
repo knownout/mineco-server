@@ -32,7 +32,7 @@ class MaterialRequestController extends DatabaseController
         $options->pinned = true;
         $options->tag = "Новости";
 
-        $pinned = parent::getMaterialsMeta($options, 1, ["identifier", "title", "time"]);
+        $pinned = parent::getMaterialsMeta($options, 1, [ "identifier", "title", "time" ]);
         if (count($pinned) < 1) return null;
         else return $pinned[0];
     }

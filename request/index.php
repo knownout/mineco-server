@@ -31,7 +31,7 @@ switch ($request)
         return $headerHandler->getLatestPinnedMaterial();
 
     //Get latest materials from db (without pinned) of specific tag descending sorted by time
-    case RequestActionsList::getLatestMaterials:
+    case RequestActionsList::getMaterials:
         return $headerHandler->getMaterials();
 
     /** READ-WRITE SECTION */

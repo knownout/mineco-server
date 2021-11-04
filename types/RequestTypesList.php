@@ -22,4 +22,5 @@ class RequestTypesList {
     public const UpdateTitle = "Update:Title";
     public const UpdateTime = "Update:Time";
     public const UpdateTags = "Update:Tags";
+    public const UpdateShort = "Update:Short";
 }

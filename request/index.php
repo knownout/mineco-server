@@ -26,7 +26,7 @@ $account = [
 
 // If no request specified, return error
 if (is_null($request)) StandardLibrary::returnJsonOutput(false, "request not specified");
-$headerHandler = new MetadataHandler();
+$metadataHandler = new MetadataHandler();
 $modificationHandler = new ModificationHandler();
 $filesHandler = new FilesHandler();
 
@@ -35,15 +35,15 @@ switch ($request)
     /** READ-ONLY SECTION */
     // Request all tags list from database
     case RequestActionsList::getTagsList:
-        return $headerHandler->getTags();
+        return $metadataHandler->getTags();
 
     // Request one latest pinned material from db descending sorted by time
     case RequestActionsList::getPinnedMaterial:
-        return $headerHandler->getLatestPinnedMaterial();
+        return $metadataHandler->getLatestPinnedMaterial();
 
     //Get latest materials from db (without pinned) of specific tag descending sorted by time
     case RequestActionsList::getMaterials:
-        return $headerHandler->getMaterials();
+        return $metadataHandler->getMaterials();
 
     /** READ-WRITE SECTION */
     // Update material on server with client data
@@ -67,6 +67,9 @@ switch ($request)
 
     case RequestActionsList::getImagesList:
         return $filesHandler->getFilesList(true);
+
+    case RequestActionsList::getFullMaterial:
+        return $metadataHandler->getFullMaterial();
 
     /** UNKNOWN REQUESTS HANDLER */
     // Return error if undefined request name

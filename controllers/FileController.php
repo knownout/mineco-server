@@ -50,6 +50,21 @@ class FileController
     }
 
     /**
+     * Decode json string with unescaped content
+     * @param string $json string with json object
+     * @return mixed
+     */
+    public static function decodeJsonString (string $json)
+    {
+        return json_decode(
+            $json, true, 512,
+
+            JSON_UNESCAPED_UNICODE
+            + JSON_UNESCAPED_SLASHES
+        );
+    }
+
+    /**
      * Encode php object to pretty-printed json string
      * @param mixed $object php object
      * @return false|string
@@ -108,7 +123,7 @@ class FileController
     /**
      * Parse and validate json string
      * @param string $json json data string
-     * @return true|string true if successfully parsed
+     * @return bool|string true if successfully parsed
      */
     public static function validateJson (string $json)
     {

@@ -5,8 +5,8 @@ require_once "../controllers/StandardLibrary.php";
 use Controllers\StandardLibrary;
 
 StandardLibrary::setCorsHeaders();
-$date = isset($_GET["date"]) ? $_GET["date"] : null;
-$file = isset($_GET["file"]) ? $_GET["file"] : null;
+$date = MetadataHandler::requestData("date");
+$file = MetadataHandler::requestData("file");
 
 // Check if required data specified by user
 if (isset($date) and isset($file))

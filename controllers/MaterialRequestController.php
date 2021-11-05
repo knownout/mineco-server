@@ -40,14 +40,15 @@ class MaterialRequestController extends DatabaseController
     /**
      * Get one or more materials by identifier
      * @param string $identifier list of identifiers
+     * @param array $columns required columns
      * @return mixed|null null if resulting array length contain nothing
      */
-    public function requestMaterialByIdentifier (string $identifier)
+    public function requestMaterialByIdentifier (string $identifier, array $columns = [ "*" ])
     {
         $options = new MaterialSearchOptions();
         $options->identifier = $identifier;
 
-        $result = parent::getMaterialsMeta($options, 1);
+        $result = parent::getMaterialsMeta($options, 1, $columns);
 
         if (count($result) > 0) return $result[0];
         else return null;

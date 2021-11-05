@@ -2,9 +2,12 @@
 
 require_once "../controllers/MaterialRequestController.php";
 require_once "../controllers/StandardLibrary.php";
+require_once "../controllers/FileController.php";
 require_once "../types/RequestTypesList.php";
 require_once "../types/MaterialSearchOptions.php";
+require_once "../server-config.php";
 
+use Controllers\FileController;
 use Controllers\MaterialRequestController;
 use Controllers\StandardLibrary;
 use Types\MaterialSearchOptions;
@@ -88,11 +91,45 @@ class MetadataHandler extends MaterialRequestController
     }
 
     /**
+     * Get material json data from file and meta content
+     */
+    public function getFullMaterial ()
+    {
+        // Identifier of the material
+        $identifier = MetadataHandler::requestData(RequestTypesList::DataIdentifier);
+        if (is_null($identifier)) StandardLibrary::returnJsonOutput(false, "identifier not specified");
+
+        global $MaterialsPath;
+        $path = $MaterialsPath . $identifier . ".json";
+
+        if (!is_file($path)) StandardLibrary::returnJsonOutput(false, "material not found");
+
+        $result = @file_get_contents($path);
+        if (!$result) StandardLibrary::returnJsonOutput(false, "material reading error");
+
+        // Simple json validation (can be parsed or not)
+        $validation = FileController::validateJson($result);
+
+        if ($validation !== true) StandardLibrary::returnJsonOutput(false, $validation);
+        else
+        {
+            $material = $this->requestMaterialByIdentifier($identifier, [ "title", "tags", "time" ]);
+            if (is_null($material)) StandardLibrary::returnJsonOutput(false, "no material database entry");
+
+            StandardLibrary::returnJsonOutput(true, [
+                "content" => FileController::decodeJsonString($result),
+                "data" => $material
+            ]);
+        }
+    }
+
+    /**
      * Get data from $_POST request
      * @param string $request RequestTypesList constant
      * @return mixed|null value or null
      */
-    public static function requestData (string $request)
+    public
+    static function requestData (string $request)
     {
         return isset($_POST[$request]) ? $_POST[$request] : null;
     }

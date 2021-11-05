@@ -39,4 +39,7 @@ class RequestActionsList
 
     /** @var string get list images (same as getFilesList) */
     public const getImagesList = "8";
+
+    /** @var string get material json content from file */
+    public const getFullMaterial = "9";
 }

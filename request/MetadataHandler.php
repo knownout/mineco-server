@@ -134,4 +134,3 @@ class MetadataHandler extends MaterialRequestController
         return isset($_POST[$request]) ? $_POST[$request] : null;
     }
 }
-

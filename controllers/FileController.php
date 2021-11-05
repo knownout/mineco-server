@@ -6,6 +6,13 @@ namespace Controllers;
 use Exception;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
+use function getimagesize;
+use function imagecopyresampled;
+use function imagecreatefromjpeg;
+use function imagecreatetruecolor;
+use function imagedestroy;
+use function imagejpeg;
+use function min;
 
 class FileController
 {
@@ -43,21 +50,6 @@ class FileController
     }
 
     /**
-     * Decode json string with unescaped content
-     * @param string $json string with json object
-     * @return mixed
-     */
-    public static function decodeJsonString (string $json)
-    {
-        return json_decode(
-            $json, true, 512,
-
-            JSON_UNESCAPED_UNICODE
-            + JSON_UNESCAPED_SLASHES
-        );
-    }
-
-    /**
      * Encode php object to pretty-printed json string
      * @param mixed $object php object
      * @return false|string
@@ -65,13 +57,6 @@ class FileController
     public static function encodeJsonString ($object)
     {
         return json_encode($object, JSON_UNESCAPED_SLASHES + JSON_UNESCAPED_UNICODE + JSON_PRETTY_PRINT);
-    }
-
-    public static function removeImageExifData ($path, $quality = 85)
-    {
-        $img = imagecreatefromjpeg($path);
-        imagejpeg($img, $path, $quality);
-        imagedestroy($img);
     }
 
     /**
@@ -93,6 +78,8 @@ class FileController
 
         if ($maxWidth == 0) $maxWidth = $origWidth;
         if ($maxHeight == 0) $maxHeight = $origHeight;
+
+        if ($origHeight < $maxHeight and $origWidth < $maxWidth) return true;
 
 
         // Calculate ratio of desired maximum sizes and original sizes.

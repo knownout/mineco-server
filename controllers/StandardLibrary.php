@@ -2,6 +2,8 @@
 
 namespace Controllers;
 
+require_once "../server-config.php";
+
 class StandardLibrary
 {
     /**
@@ -27,12 +29,18 @@ class StandardLibrary
 
     public static function setCorsHeaders ()
     {
+        global $AllowAllOrigins;
+        $protocol = isset($_SERVER["HTTPS"]) ? "https" : "http";
+
+        if ($AllowAllOrigins) $origin = "*";
+        else $origin = $protocol . "://" . $_SERVER["HTTP_HOST"];
+
         // Allow from any origin
         if (isset($_SERVER['HTTP_HOST']))
         {
             // Decide if the origin in $_SERVER['HTTP_HOST'] is one
             // you want to allow, and if so:
-            header("Access-Control-Allow-Origin: {$_SERVER['HTTP_HOST']}");
+            header("Access-Control-Allow-Origin: {$origin}");
             header('Access-Control-Allow-Credentials: true');
             header('Access-Control-Max-Age: 86400');    // cache for 1 day
         }

@@ -44,7 +44,7 @@ Result of executing the code above is a list of all available
 Available request types are listed in the 
 `RequestTypes` object in the code above
 
-Read-only queries can take the following parameters:
+Read-only queries can take the following parameters (legacy, might not work):
 
 | Option | Type | Description |
 | ------ | ---- | ----------- |

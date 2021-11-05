@@ -10,6 +10,14 @@ use Controllers\StandardLibrary;
 use Types\RequestActionsList;
 use Types\RequestTypesList;
 
+StandardLibrary::setCorsHeaders();
+
+if (isset($_SERVER["CONTENT_LENGTH"]))
+{
+    if ($_SERVER["CONTENT_LENGTH"] > ((int)ini_get('post_max_size') * 1024 * 1024))
+        exit(http_response_code(413));
+}
+
 $request = MetadataHandler::requestData(RequestTypesList::Action);
 $account = [
     "login" => MetadataHandler::requestData(RequestTypesList::AccountLogin),
@@ -51,11 +59,8 @@ switch ($request)
         return $modificationHandler->changePassword();
 
     /** FILES UPLOAD SECTION */
-    case RequestActionsList::uploadImage:
-        return $filesHandler->uploadFile();
-
     case RequestActionsList::uploadFile:
-        return $filesHandler->uploadImage();
+        return $filesHandler->uploadFile();
 
     case RequestActionsList::getFilesList:
         return $filesHandler->getFilesList(false);

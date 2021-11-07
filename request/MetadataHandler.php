@@ -15,7 +15,7 @@ use Types\RequestTypesList;
 
 class MetadataHandler extends MaterialRequestController
 {
-    public function __construct ()
+    public function __construct()
     {
         parent::__construct();
     }
@@ -23,7 +23,7 @@ class MetadataHandler extends MaterialRequestController
     /**
      * Return all tags list as request output
      */
-    public function getTags ()
+    public function getTags()
     {
         StandardLibrary::returnJsonOutput(true, parent::getTagsList());
     }
@@ -31,7 +31,7 @@ class MetadataHandler extends MaterialRequestController
     /**
      * Return one latest pinned material as request output
      */
-    public function getLatestPinnedMaterial ()
+    public function getLatestPinnedMaterial()
     {
         $pinned = parent::requestPinnedMaterial();
         if (is_null($pinned)) StandardLibrary::returnJsonOutput(false, "no pinned materials");
@@ -50,7 +50,7 @@ class MetadataHandler extends MaterialRequestController
      *
      * Data:Limit - specify count (string -> int) of materials, default is 10
      */
-    public function getMaterials ()
+    public function getMaterials()
     {
         // Shortcuts for necessary functions
         $post = fn(string $req) => MetadataHandler::requestData($req);
@@ -64,6 +64,7 @@ class MetadataHandler extends MaterialRequestController
         $title = $post(RequestTypesList::DataTitle);
         $timeStart = $post(RequestTypesList::DataTimeStart);
         $timeEnd = $post(RequestTypesList::DataTimeEnd);
+        $offset = $post(RequestTypesList::DataOffset);
 
         $identifier = $post(RequestTypesList::DataIdentifier);
 
@@ -76,12 +77,12 @@ class MetadataHandler extends MaterialRequestController
 
         // Add request parameters to search parameters object with escaping strings
         if (!is_null($identifier)) $options->identifier = $escape($identifier);
-        else
-        {
+        else {
             if (!is_null($title)) $options->title = $escape($title);
             if (!is_null($timeStart)) $options->time_start = (int)$escape($timeStart);
             if (!is_null($timeEnd)) $options->time_end = (int)$escape($timeEnd);
             if (!is_null($tag)) $options->tag = $escape($tag);
+            if (!is_null($offset)) $options->offset = (int)$escape($offset);
         }
 
         $materials = parent::requestMaterials($options, $limit);
@@ -93,7 +94,7 @@ class MetadataHandler extends MaterialRequestController
     /**
      * Get material json data from file and meta content
      */
-    public function getFullMaterial ()
+    public function getFullMaterial()
     {
         // Identifier of the material
         $identifier = MetadataHandler::requestData(RequestTypesList::DataIdentifier);
@@ -111,9 +112,8 @@ class MetadataHandler extends MaterialRequestController
         $validation = FileController::validateJson($result);
 
         if ($validation !== true) StandardLibrary::returnJsonOutput(false, $validation);
-        else
-        {
-            $material = $this->requestMaterialByIdentifier($identifier, [ "title", "tags", "time" ]);
+        else {
+            $material = $this->requestMaterialByIdentifier($identifier, ["title", "tags", "time"]);
             if (is_null($material)) StandardLibrary::returnJsonOutput(false, "no material database entry");
 
             StandardLibrary::returnJsonOutput(true, [
@@ -129,7 +129,7 @@ class MetadataHandler extends MaterialRequestController
      * @return mixed|null value or null
      */
     public
-    static function requestData (string $request)
+    static function requestData(string $request)
     {
         return isset($_POST[$request]) ? $_POST[$request] : null;
     }

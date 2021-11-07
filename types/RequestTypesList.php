@@ -16,6 +16,7 @@ class RequestTypesList
     public const DataTimeStart = "Data:TimeStart";
     public const DataTimeEnd = "Data:TimeEnd";
     public const DataIdentifier = "Data:Identifier";
+    public const DataOffset = "Data:Offset";
 
     public const UpdateIdentifier = "Update:Identifier";
     public const UpdateContent = "Update:Content";

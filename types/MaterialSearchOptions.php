@@ -51,4 +51,10 @@ class MaterialSearchOptions
      */
     public ?bool $pinned = null;
 
+    /**
+     * Offset for the materials search
+     * @var int|null
+     */
+    public ?int $offset = null;
+
 }

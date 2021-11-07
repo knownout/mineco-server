@@ -17,7 +17,7 @@ class DatabaseController
     public ?string $connection_error = null;
     protected mysqli $connection;
 
-    protected function __construct ()
+    protected function __construct()
     {
         $this->connection = new mysqli(...array_values(DatabaseOptions));
         $this->connection->character_set_name();
@@ -31,7 +31,7 @@ class DatabaseController
      * @param string $filter
      * @return array tags with display = 1 or null if connection error
      */
-    protected function getTagsList (?string $filter = "")
+    protected function getTagsList(?string $filter = "")
     {
         if ($this->connection_error) return null;
 
@@ -56,7 +56,7 @@ class DatabaseController
      * @param array $columns specify columns to retrieve from db
      * @return mixed assoc array of the materials or null if connection error
      */
-    protected function getMaterialsMeta (MaterialSearchOptions $searchOptions, int $limit = 0, array $columns = [])
+    protected function getMaterialsMeta(MaterialSearchOptions $searchOptions, int $limit = 0, array $columns = [])
     {
         $queryString = [];
 
@@ -67,8 +67,7 @@ class DatabaseController
         // If identifiers list set, do not parse other options
         if (isset($searchOptions->identifier))
             array_push($queryString, "identifier='{$searchOptions->identifier}'");
-        else
-        {
+        else {
             // Parse options without identifiers list
             if (isset($searchOptions->pinned))
                 array_push($queryString, "pinned=" . (int)$searchOptions->pinned);
@@ -103,7 +102,11 @@ class DatabaseController
         $query .= " ORDER BY time DESC";
 
         // If limit provided, set it
-        if ($limit > 0) $query .= " LIMIT {$limit}";
+        if ($limit > 0) {
+            $query .= " LIMIT {$limit}";
+            if (isset($searchOptions->offset))
+                $query .= " OFFSET {$searchOptions->offset}";
+        }
 //        $query = $this->connection->real_escape_string($query);
 
         // Execute and return query
@@ -115,7 +118,7 @@ class DatabaseController
      * @param string $login user login
      * @return mixed|null
      */
-    protected function getAccountData ($login)
+    protected function getAccountData($login)
     {
         if ($this->connection_error) return null;
         $login = $this->connection->real_escape_string($login);

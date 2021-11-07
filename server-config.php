@@ -13,19 +13,22 @@ const DatabaseOptions = [
 ];
 
 global $MaterialsPath, $UserContentPath, $ImageSize, $ImageQuality, $AllowAllOrigins;
-$MaterialsPath = join(DIRECTORY_SEPARATOR, [ $_SERVER["DOCUMENT_ROOT"], "user-content", "" ]);
+$MaterialsPath = join(DIRECTORY_SEPARATOR, [$_SERVER["DOCUMENT_ROOT"], "user-content", ""]);
 
 // If you want to change user files storage location, simple change "user-storage" to your folder name
 // Add entries to array to add path segments: ["a", "b", "c", ""] => a/b/c/
 $UserContentPath = join(
-    DIRECTORY_SEPARATOR, [ $_SERVER["DOCUMENT_ROOT"], "user-storage", "" ]
+    DIRECTORY_SEPARATOR, [$_SERVER["DOCUMENT_ROOT"], "user-storage", ""]
 );
 
 // All uploaded images (except preview) will be scaled to this size (ratio-friendly)
-$ImageSize = [ 1280, 720 ];
+$ImageSize = [1280, 720];
 
 // All uploaded images (preview too) will has this quality
 $ImageQuality = 95; // Maximal value is 100
 
 // If true, CORS header Access-Control-Allow-Origin will allow all origins (*)
 $AllowAllOrigins = true;
+
+if (!is_dir($MaterialsPath)) mkdir($MaterialsPath);
+if (!is_dir($UserContentPath)) mkdir($UserContentPath);

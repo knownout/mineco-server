@@ -45,7 +45,7 @@ class AccountsController extends DatabaseController
     {
         $account = parent::getAccountData($login);
         if (is_null($account) or $account["hash"] != $hash) return false;
-        else return true;
+        else return $account;
     }
 
     /**
@@ -58,6 +58,8 @@ class AccountsController extends DatabaseController
         $hash = MetadataHandler::requestData(RequestTypesList::AccountHash);
 
         if (is_null($login) or is_null($hash)) return [ false, $login, $hash ];
-        return [ $this->compareAccountData($login, $hash), $login, $hash ];
+        $compare = $this->compareAccountData($login, $hash);
+
+        return [ $compare !== false, $login, $hash, $compare["full_name"] ];
     }
 }

@@ -125,7 +125,7 @@ class DatabaseController
 
         // Get specified account data from db
         $result = $this->connection->query(
-            "SELECT * FROM accounts WHERE login='{$login}'")->fetch_all(MYSQLI_ASSOC
+            "SELECT * FROM accounts WHERE login='{$login}' AND active=1")->fetch_all(MYSQLI_ASSOC
         );
 
         // If account not exist, return null

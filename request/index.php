@@ -58,6 +58,9 @@ switch ($request)
     case RequestActionsList::changePassword:
         return $modificationHandler->changePassword();
 
+    case RequestActionsList::verifyAccount:
+        return $modificationHandler->verifyAccountData();
+
     /** FILES UPLOAD SECTION */
     case RequestActionsList::uploadFile:
         return $filesHandler->uploadFile();

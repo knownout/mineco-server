@@ -54,6 +54,12 @@ class ModificationHandler extends AccountsController
         StandardLibrary::returnJsonOutput(true, "password changed");
     }
 
+    public function verifyAccountData ()
+    {
+        [ $verification, $login, $hash, $name ] = parent::verifyWithPostData();
+        StandardLibrary::returnJsonOutput($verification, [ "name" => $name ]);
+    }
+
     /**
      * Update material db entry (for time, title, identifier and tags) and
      * files on drive (content file, preview, images, files)

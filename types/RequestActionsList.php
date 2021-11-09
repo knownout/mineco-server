@@ -42,4 +42,7 @@ class RequestActionsList
 
     /** @var string get material json content from file */
     public const getFullMaterial = "9";
+
+    /** @var string verify account data */
+    public const verifyAccount = "10";
 }

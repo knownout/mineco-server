@@ -134,4 +134,34 @@ class MetadataHandler extends MaterialRequestController
     {
         return isset($_POST[$request]) ? $_POST[$request] : null;
     }
+
+    /**
+     * Verify client recaptcha token with google recaptcha api (POST request)
+     * @return bool|mixed false if failed, response data if success
+     */
+    public static function verifyCaptchaRequest ()
+    {
+        global $CaptchaSecretKey;
+
+        $token = MetadataHandler::requestData(RequestTypesList::CaptchaToken);
+        $data = [ "secret" => $CaptchaSecretKey, "response" => $token ];
+
+        $options = [
+            "http" => [
+                "header" => "Content-type: application/x-www-form-urlencoded\r\n",
+                "method" => "POST",
+                "content" => http_build_query($data)
+            ]
+        ];
+
+        $context = stream_context_create($options);
+        $result = FileController::decodeJsonString(
+            file_get_contents("https://www.google.com/recaptcha/api/siteverify",
+                false, $context)
+        );
+
+        if ($result["score"] < 0.3) return false;
+
+        return $result["success"] ? array_slice($result, 1, count($result)) : false;
+    }
 }

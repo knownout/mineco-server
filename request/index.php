@@ -58,7 +58,12 @@ switch ($request)
     case RequestActionsList::changePassword:
         return $modificationHandler->changePassword();
 
+    // Verify provided account data
     case RequestActionsList::verifyAccount:
+        // Check if recaptcha token provided and score greater than or equal to 0.3
+        $captcha = MetadataHandler::verifyCaptchaRequest();
+        if (!$captcha) StandardLibrary::returnJsonOutput(false, $captcha);
+
         return $modificationHandler->verifyAccountData();
 
     /** FILES UPLOAD SECTION */
@@ -73,6 +78,11 @@ switch ($request)
 
     case RequestActionsList::getFullMaterial:
         return $metadataHandler->getFullMaterial();
+
+    /** Google recaptcha token verification */
+
+    case RequestActionsList::verifyCaptchaRequest:
+        return MetadataHandler::verifyCaptchaRequest();
 
     /** UNKNOWN REQUESTS HANDLER */
     // Return error if undefined request name

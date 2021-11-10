@@ -45,4 +45,7 @@ class RequestActionsList
 
     /** @var string verify account data */
     public const verifyAccount = "10";
+
+    /** @var string verify google recaptcha token */
+    public const verifyCaptchaRequest = "11";
 }

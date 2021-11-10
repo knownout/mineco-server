@@ -18,6 +18,8 @@ class RequestTypesList
     public const DataIdentifier = "Data:Identifier";
     public const DataOffset = "Data:Offset";
 
+    public const CaptchaToken = "Captcha:ResponseToken";
+
     public const UpdateIdentifier = "Update:Identifier";
     public const UpdateContent = "Update:Content";
     public const UpdatePinned = "Update:Pinned";

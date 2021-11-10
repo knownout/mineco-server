@@ -54,10 +54,14 @@ class ModificationHandler extends AccountsController
         StandardLibrary::returnJsonOutput(true, "password changed");
     }
 
+    /**
+     * Read and compare user account data
+     */
     public function verifyAccountData ()
     {
-        [ $verification, $login, $hash, $name ] = parent::verifyWithPostData();
-        StandardLibrary::returnJsonOutput($verification, [ "name" => $name ]);
+        $verification = parent::verifyWithPostData();
+        StandardLibrary::returnJsonOutput($verification[0], [ "name" =>
+            isset($verification[3]) ? $verification[3] : null ]);
     }
 
     /**

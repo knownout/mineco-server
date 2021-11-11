@@ -56,13 +56,16 @@ switch ($request)
     /** ACCOUNTS READ-WRITE SECTION */
     // Change account password
     case RequestActionsList::changePassword:
+        $captcha = MetadataHandler::verifyCaptchaRequest();
+        if (!$captcha) StandardLibrary::returnJsonOutput(false, "recaptcha verification failed");
+
         return $modificationHandler->changePassword();
 
     // Verify provided account data
     case RequestActionsList::verifyAccount:
         // Check if recaptcha token provided and score greater than or equal to 0.3
         $captcha = MetadataHandler::verifyCaptchaRequest();
-        if (!$captcha) StandardLibrary::returnJsonOutput(false, $captcha);
+        if (!$captcha) StandardLibrary::returnJsonOutput(false, "recaptcha verification failed");
 
         return $modificationHandler->verifyAccountData();
 

@@ -60,8 +60,11 @@ class ModificationHandler extends AccountsController
     public function verifyAccountData ()
     {
         $verification = parent::verifyWithPostData();
-        StandardLibrary::returnJsonOutput($verification[0], [ "name" =>
-            isset($verification[3]) ? $verification[3] : null ]);
+        $returnData = $verification[0]
+            ? [ "name" => isset($verification[3]) ? $verification[3] : null ]
+            : "invalid auth data";
+
+        StandardLibrary::returnJsonOutput($verification[0], $returnData);
     }
 
     /**

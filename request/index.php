@@ -70,12 +70,16 @@ switch ($request)
         return $modificationHandler->verifyAccountData();
 
     /** FILES UPLOAD SECTION */
+    // Upload specific file to file storage (except images)
     case RequestActionsList::uploadFile:
         return $filesHandler->uploadFile();
 
+    // Get list of all files in file storage directory (without images)
     case RequestActionsList::getFilesList:
         return $filesHandler->getFilesList(false);
 
+    // These two are the same as file requests, but for images
+    
     case RequestActionsList::getImagesList:
         return $filesHandler->getFilesList(true);
 
@@ -86,6 +90,10 @@ switch ($request)
 
     case RequestActionsList::verifyCaptchaRequest:
         return MetadataHandler::verifyCaptchaRequest();
+
+    /** Property request */
+    case RequestActionsList::getFromProperties:
+        return $metadataHandler->getFromProperties();
 
     /** UNKNOWN REQUESTS HANDLER */
     // Return error if undefined request name

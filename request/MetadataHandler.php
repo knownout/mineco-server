@@ -126,6 +126,19 @@ class MetadataHandler extends MaterialRequestController
     }
 
     /**
+     * Get specified property from database
+     */
+    public function getFromProperties ()
+    {
+        $property = MetadataHandler::requestData(RequestTypesList::Property);
+        $value = $this->connection->query("select value from properties where property='{$property}'")
+            ->fetch_assoc();
+
+        if (is_null($value)) StandardLibrary::returnJsonOutput(false, "invalid property name");
+        else StandardLibrary::returnJsonOutput(true, $value);
+    }
+
+    /**
      * Get data from $_POST request
      * @param string $request RequestTypesList constant
      * @return mixed|null value or null

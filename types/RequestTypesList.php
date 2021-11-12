@@ -20,6 +20,8 @@ class RequestTypesList
 
     public const CaptchaToken = "Captcha:ResponseToken";
 
+    public const Property = "Database:Property";
+
     public const UpdateIdentifier = "Update:Identifier";
     public const UpdateContent = "Update:Content";
     public const UpdatePinned = "Update:Pinned";

@@ -48,4 +48,7 @@ class RequestActionsList
 
     /** @var string verify google recaptcha token */
     public const verifyCaptchaRequest = "11";
+
+    /** @var string get content from properties table */
+    public const getFromProperties = "12";
 }

@@ -216,4 +216,21 @@ class ModificationHandler extends AccountsController
             StandardLibrary::returnJsonOutput(true, "material removed");
         } else StandardLibrary::returnJsonOutput(false, "material not removed");
     }
+
+    /**
+     * Update specific property value in database
+     */
+    public function updateProperty ()
+    {
+        [ $verification ] = parent::verifyWithPostData();
+
+        if(!$verification) StandardLibrary::returnJsonOutput(false, "auth data invalid");
+
+        $property = MetadataHandler::requestData(RequestTypesList::Property);
+        $value = MetadataHandler::requestData(RequestTypesList::PropertyValue);
+
+        $this->connection->query("UPDATE properties SET value='{$value}' WHERE property='{$property}'");
+        if ($this->connection->error) StandardLibrary::returnJsonOutput(false, $this->connection->error);
+        else StandardLibrary::returnJsonOutput(true, null);
+    }
 }

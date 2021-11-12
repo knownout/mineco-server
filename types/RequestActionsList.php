@@ -51,4 +51,7 @@ class RequestActionsList
 
     /** @var string get content from properties table */
     public const getFromProperties = "12";
+
+    /** @var string update property value in database */
+    public const updateProperty = "13";
 }

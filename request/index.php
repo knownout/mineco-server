@@ -79,7 +79,7 @@ switch ($request)
         return $filesHandler->getFilesList(false);
 
     // These two are the same as file requests, but for images
-    
+
     case RequestActionsList::getImagesList:
         return $filesHandler->getFilesList(true);
 
@@ -91,9 +91,15 @@ switch ($request)
     case RequestActionsList::verifyCaptchaRequest:
         return MetadataHandler::verifyCaptchaRequest();
 
-    /** Property request */
+    /** Properties get/update requests */
     case RequestActionsList::getFromProperties:
         return $metadataHandler->getFromProperties();
+
+    case RequestActionsList::updateProperty:
+        $captcha = MetadataHandler::verifyCaptchaRequest();
+        if (!$captcha) StandardLibrary::returnJsonOutput(false, "recaptcha verification failed");
+
+        return $modificationHandler->updateProperty();
 
     /** UNKNOWN REQUESTS HANDLER */
     // Return error if undefined request name

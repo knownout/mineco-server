@@ -21,6 +21,7 @@ class RequestTypesList
     public const CaptchaToken = "Captcha:ResponseToken";
 
     public const Property = "Database:Property";
+    public const PropertyValue = "Database:PropertyValue";
 
     public const UpdateIdentifier = "Update:Identifier";
     public const UpdateContent = "Update:Content";

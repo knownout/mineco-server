@@ -1,60 +1,71 @@
-# Ministry of Agriculture and Natural Resources web application server API
+# Server part for the web application of the Ministry of A&NR of Transnistria
+<img alt="GitHub code size in bytes" src="https://img.shields.io/github/languages/code-size/re-knownout/mineco-server"> <img alt="GitHub package.json version" src="https://img.shields.io/github/package-json/v/re-knownout/mineco-server"> <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/re-knownout/mineco-server"> <img alt="GitHub" src="https://img.shields.io/github/license/re-knownout/mineco-server">
 
-The server API contains two types of requests: 
-1. Only reading data from the database and server files
-2. Reading and writing data
+> Contents of this file will not be translated 
+into other languages (including English) due to the 
+fact that this project is local and does not 
+provide for international use
 
-Read-only requests only need their own parameters to call 
-(Number of items, identifier, title, and so on)
+This project created and developed as part of the 
+program to update the web infrastructure of my current 
+place of work (Ministry of Agriculture and Natural 
+Resources of Transnistria)
 
-Requests that modify (write) the database and server files require, 
-in addition to their own parameters, additional user authorization parameters.
+## Серверная часть веб-приложения для Министерства сельского хозяйства и природных ресурсов Приднестровья
 
-Data is transmitted using POST requests 
-(excluding file upload and image view handlers, they use GET)
+Данный проект является серверной частью (бэк-эндом) для веб-приложения
+Министерства сельского хозяйства и природных ресурсов Приднестровья
+и разработан в рамках проекта по обновлению веб-инфраструктуры 
+моего текущего места работы (МСХиПР)
 
-## Read-only request (without authentication)
-```typescript
-// Request types numeration
-enum RequestTypes {
-    getTagsList = 0,
-    getPinnedMaterial = 1,
-    getMaterials = 2,
-    updateMaterial = 3,
-    removeMaterial = 4,
-    changePassword = 5
-}
+_Проект создан на основе чистого PHP версии 7.4 без использования
+каких-либо фреймворков и внешних библиотек (не считая
+стандартные плагины PHP и xdebug)_
 
-// Options of the request
-const options = {
-    "Request:Action": RequestTypes.getTagsList
-};
+### 🧪 Концепция запросов и контроллеров
 
-const formData = new FormData();
+Концепция заключается в том, что все пользовательские запросы
+поступают в один и тот же файл (адрес), который, в свою очередь,
+вызывает определенные методы из классов типа `Handler`, которые,
+в свою очередь, вызывают методы контроллеров, и только на
+этом этапе (при помощи контроллеров) происходит взаимодействие
+с файлами сервера или базой данных
 
-// Append values form options to the form data
-Object.keys(options)
-    .forEach(i => formData.append(i, options[i]));
-```
+### 🧰 Классы типа `Handler`
 
+Данные классы являться промежуточным звеном между контроллерами
+и скриптом-обработчиком пользовательских запросов
 
-Result of executing the code above is a list of all available 
-(displayed) tags from the database
+Методы классов (за исключением статичных методов) не возвращают
+значение, а сразу совершают выход из скрипта посредством
+вызова функции возврата ответа в формате JSON из класса
+`StandardLibrary`
 
-Available request types are listed in the 
-`RequestTypes` object in the code above
+### 🎮 Контроллеры
 
-Read-only queries can take the following parameters (legacy, might not work):
+Каждый контроллер представляет собой класс, который прямо или
+косвенно наследует `DatabaseController` и выполняет роль посредника 
+при взаимодействии классов типа `Handler` с 
+файлами сервера или базой данных
 
-| Option | Type | Description |
-| ------ | ---- | ----------- |
-| Request:Action | int | type of the request |
-| DataTag        | string | search materials by tag |
-| DataLimit      | int | set limit of search result |
-| DataFindPinned | boolean | find pinned materials too |
-| DataTitle      | string | find materials by title |
-| DataTimeStart  | int | find materials after date |
-| DataTimeEnd    | int | find materials before date |
-| DataIdentifier | string | find material by identifier |
+В таблице ниже представлены контроллеры и их краткое описание:
 
-If DataIdentifier specified, other options will no take effect
+| Контроллер | Краткое описание |
+| --- | --- |
+| **`DatabaseController`** | Основной контроллер, который наследуется всеми остальными контроллерами. Дает возможность взаимодействовать с базой данных, предоставляя как возможность создания прямого запроса к базе данных, так и методы для быстрого создания типичных запросов |
+| `AccountsController` | Контроллер для работы с аккаунтами пользователей (проверка данных авторизации пользователя и изменение пароля аккаунта) |
+| `FileController` | Контроллер, осуществляющий взаимодействие с файлами сервера (рекурсивное удаление, изменение изображений и работа с JSON файлами) |
+| `LogController` | Используется только для одного - записи действий авторизированных пользователей в системе управления контентом |
+| `MaterialRequestContoller` | Контроллер для работы с [материалами](https://github.com/re-knownout/mineco-application#readme) (получение одного или нескольких материалов при помощи определенного набора параметров) |
+| `StandardLibrary` | По сути, является не контроллером, а просто набором полезных методов для реализации тех или иных задач |
+
+_Исключением из концепции контроллеров является класс 
+`ModificationHandler`, реализующий собственные обертки вокруг методов
+других контроллеров, при этом представляя собой класс типа `Handler`. Сделано
+это для упрощения, ведь обертки класса `ModificationHandler` используются в
+узком спектре задач и не нуждаются в создании отдельного контроллера_
+
+https://ecology-pmr.org/ - Министерство сельского хозяйства и природных
+ресурсов Приднстровья<br>
+re-knownout - https://github.com/re-knownout/
+<br>knownout@hotmail.com

@@ -1,0 +1,19 @@
+{
+    "name": "mineco-server",
+    "version": "2.0.0",
+    "description": "Server part of the web application of the Ministry of Agriculture and Natural Resources of Transnistria",
+    "author": "re-knownout <re-knownout> knownout@hotmail.com",
+    "main": "request/index.php",
+    "scripts": {
+        "start": "php -S 0.0.0.0:80"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/re-knownout/mineco-server.git"
+    },
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/re-knownout/mineco-server/issues"
+    },
+    "homepage": "https://github.com/re-knownout/mineco-server#readme"
+}

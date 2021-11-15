@@ -1,15 +1,48 @@
 <?php
 
 require_once "../controllers/StandardLibrary.php";
+require_once "../request/MetadataHandler.php";
+require_once "../server-config.php";
 
 use Controllers\StandardLibrary;
 
 StandardLibrary::setCorsHeaders();
-$date = MetadataHandler::requestData("date");
-$file = MetadataHandler::requestData("file");
 
-// Check if required data specified by user
-if (isset($date) and isset($file))
+$extensionIcon = MetadataHandler::requestData("extension_icon", $_GET);
+
+$date = MetadataHandler::requestData("date", $_GET);
+$file = MetadataHandler::requestData("file", $_GET);
+
+if (isset($extensionIcon)) // Get icon for file extension, if exist
+{
+    global $ExtensionIconsPath;
+
+    $iconFileName = null;
+    foreach (array_diff(scandir($ExtensionIconsPath), [".", "..", "unknown.png"]) as $icon)
+    {
+        $k += 1;
+        $filename = pathinfo($icon)["filename"];
+        $regex = "/(" . str_replace(",", "|", $filename) . ").{0,1}$/";
+
+        $match = preg_match($regex, $extensionIcon);
+
+        if ($match)
+        {
+            $iconFileName = $icon;
+            break;
+        }
+    }
+
+    if (!$iconFileName) $iconFileName = "unknown.png";
+
+    if (!is_file($ExtensionIconsPath . $iconFileName))
+        http_response_code(404);
+    else
+    {
+        header("Content-type: image/png");
+        readfile($ExtensionIconsPath . $iconFileName);
+    }
+} else if (isset($date) and isset($file)) // Check if required data specified by user
 {
     global $UserContentPath;
     $path = $UserContentPath . $date . DIRECTORY_SEPARATOR . $file;

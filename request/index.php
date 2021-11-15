@@ -104,10 +104,6 @@ switch ($request)
 
         return $modificationHandler->updateProperty();
 
-    /** Search for extension icon */
-    case RequestActionsList::searchExtensionIcon:
-        return $metadataHandler->searchExtensionIcon();
-
     /** UNKNOWN REQUESTS HANDLER */
     // Return error if undefined request name
     default:

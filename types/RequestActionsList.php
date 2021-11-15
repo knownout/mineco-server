@@ -54,4 +54,7 @@ class RequestActionsList
 
     /** @var string update property value in database */
     public const updateProperty = "13";
+
+    /** @var string search for file extension icon in extension icons folder */
+    public const searchExtensionIcon = "14";
 }

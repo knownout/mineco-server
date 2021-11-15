@@ -176,4 +176,10 @@ class MetadataHandler extends MaterialRequestController
 
         return $result["success"] ? array_slice($result, 1, count($result)) : false;
     }
+
+    public function searchExtensionIcon ()
+    {
+        global $ExtensionIconsPath;
+        $extension = MetadataHandler::requestData(RequestTypesList::ImageSearchExtension);
+    }
 }

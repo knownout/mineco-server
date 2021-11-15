@@ -30,4 +30,6 @@ class RequestTypesList
     public const UpdateTime = "Update:Time";
     public const UpdateTags = "Update:Tags";
     public const UpdateShort = "Update:Short";
+
+    public const ImageSearchExtension = "ImageSearch:Extension";
 }

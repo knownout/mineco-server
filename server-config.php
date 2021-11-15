@@ -16,7 +16,9 @@ const DatabaseOptions = [
     "port" => "3306"
 ];
 
-global $MaterialsPath, $UserContentPath, $ImageSize, $ImageQuality, $AllowAllOrigins, $CaptchaSecretKey;
+global $MaterialsPath, $UserContentPath, $ImageSize, $ImageQuality, $AllowAllOrigins, $CaptchaSecretKey,
+       $ExtensionIconsPath;
+
 $MaterialsPath = join(DIRECTORY_SEPARATOR, [ $_SERVER["DOCUMENT_ROOT"], "user-content", "" ]);
 
 // If you want to change user files storage location, simple change "user-storage" to your folder name
@@ -33,6 +35,9 @@ $ImageQuality = 95; // Maximal value is 100
 
 // If true, CORS header Access-Control-Allow-Origin will allow all origins (*)
 $AllowAllOrigins = true;
+
+// Path to file extensions icons folder
+$ExtensionIconsPath = join(DIRECTORY_SEPARATOR, [ $_SERVER["DOCUMENT_ROOT"], "public", "file-extensions", "" ]);
 
 if (!is_dir($MaterialsPath)) mkdir($MaterialsPath);
 if (!is_dir($UserContentPath)) mkdir($UserContentPath);

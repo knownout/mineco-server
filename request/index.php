@@ -72,6 +72,9 @@ switch ($request)
     /** FILES UPLOAD SECTION */
     // Upload specific file to file storage (except images)
     case RequestActionsList::uploadFile:
+        $captcha = MetadataHandler::verifyCaptchaRequest();
+        if (!$captcha) StandardLibrary::returnJsonOutput(false, "recaptcha verification failed");
+
         return $filesHandler->uploadFile();
 
     // Get list of all files in file storage directory (without images)
@@ -100,6 +103,10 @@ switch ($request)
         if (!$captcha) StandardLibrary::returnJsonOutput(false, "recaptcha verification failed");
 
         return $modificationHandler->updateProperty();
+
+    /** Search for extension icon */
+    case RequestActionsList::searchExtensionIcon:
+        return $metadataHandler->searchExtensionIcon();
 
     /** UNKNOWN REQUESTS HANDLER */
     // Return error if undefined request name

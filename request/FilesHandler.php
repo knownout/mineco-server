@@ -66,8 +66,7 @@ class FilesHandler extends AccountsController
                 $info = pathinfo($local . $file);
 
                 // If images needed, skip files and vice versa
-                if (!$images and mime_content_type($local . $file) == "image/jpeg") continue;
-                else if ($images and mime_content_type($local . $file) != "image/jpeg") continue;
+                if ($images and mime_content_type($local . $file) != "image/jpeg") continue;
 
                 // Write to data tree
                 $fileSystem[$directory][$file] = [

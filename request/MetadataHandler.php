@@ -15,7 +15,7 @@ use Types\RequestTypesList;
 
 class MetadataHandler extends MaterialRequestController
 {
-    public function __construct()
+    public function __construct ()
     {
         parent::__construct();
     }
@@ -23,7 +23,7 @@ class MetadataHandler extends MaterialRequestController
     /**
      * Return all tags list as request output
      */
-    public function getTags()
+    public function getTags ()
     {
         StandardLibrary::returnJsonOutput(true, parent::getTagsList());
     }
@@ -31,7 +31,7 @@ class MetadataHandler extends MaterialRequestController
     /**
      * Return one latest pinned material as request output
      */
-    public function getLatestPinnedMaterial()
+    public function getLatestPinnedMaterial ()
     {
         $pinned = parent::requestPinnedMaterial();
         if (is_null($pinned)) StandardLibrary::returnJsonOutput(false, "no pinned materials");
@@ -50,7 +50,7 @@ class MetadataHandler extends MaterialRequestController
      *
      * Data:Limit - specify count (string -> int) of materials, default is 10
      */
-    public function getMaterials()
+    public function getMaterials ()
     {
         // Shortcuts for necessary functions
         $post = fn(string $req) => MetadataHandler::requestData($req);
@@ -77,7 +77,8 @@ class MetadataHandler extends MaterialRequestController
 
         // Add request parameters to search parameters object with escaping strings
         if (!is_null($identifier)) $options->identifier = $escape($identifier);
-        else {
+        else
+        {
             if (!is_null($title)) $options->title = $escape($title);
             if (!is_null($timeStart)) $options->time_start = (int)$escape($timeStart);
             if (!is_null($timeEnd)) $options->time_end = (int)$escape($timeEnd);
@@ -94,7 +95,7 @@ class MetadataHandler extends MaterialRequestController
     /**
      * Get material json data from file and meta content
      */
-    public function getFullMaterial()
+    public function getFullMaterial ()
     {
         // Identifier of the material
         $identifier = MetadataHandler::requestData(RequestTypesList::DataIdentifier);
@@ -112,8 +113,9 @@ class MetadataHandler extends MaterialRequestController
         $validation = FileController::validateJson($result);
 
         if ($validation !== true) StandardLibrary::returnJsonOutput(false, $validation);
-        else {
-            $material = $this->requestMaterialByIdentifier($identifier, ["title", "tags", "time"]);
+        else
+        {
+            $material = $this->requestMaterialByIdentifier($identifier, [ "title", "tags", "time" ]);
             if (is_null($material)) StandardLibrary::returnJsonOutput(false, "no material database entry");
 
             StandardLibrary::returnJsonOutput(true, [
@@ -126,7 +128,7 @@ class MetadataHandler extends MaterialRequestController
     /**
      * Get specified property from database
      */
-    public function getFromProperties()
+    public function getFromProperties ()
     {
         $property = MetadataHandler::requestData(RequestTypesList::Property);
         $value = $this->connection->query("SELECT value FROM properties WHERE property='{$property}'")->fetch_assoc();
@@ -141,7 +143,7 @@ class MetadataHandler extends MaterialRequestController
      * @param string $requestStorage post or get request type
      * @return mixed|null value or null
      */
-    public static function requestData(string $request, $requestStorage = "post")
+    public static function requestData (string $request, $requestStorage = "post")
     {
         return isset(($requestStorage == "post" ? $_POST : $_GET)[$request])
             ? ($requestStorage == "post" ? $_POST : $_GET)[$request]
@@ -152,12 +154,12 @@ class MetadataHandler extends MaterialRequestController
      * Verify client recaptcha token with google recaptcha api (POST request)
      * @return bool|mixed false if failed, response data if success
      */
-    public static function verifyCaptchaRequest()
+    public static function verifyCaptchaRequest ()
     {
         global $CaptchaSecretKey;
 
         $token = MetadataHandler::requestData(RequestTypesList::CaptchaToken);
-        $data = ["secret" => $CaptchaSecretKey, "response" => $token];
+        $data = [ "secret" => $CaptchaSecretKey, "response" => $token ];
 
         $options = [
             "http" => [
@@ -173,7 +175,7 @@ class MetadataHandler extends MaterialRequestController
                 false, $context)
         );
 
-        if ($result["score"] < 0.3) return false;
+        if (!isset($result) or !isset($result["score"]) or $result["score"] < 0.3) return false;
 
         return $result["success"] ? array_slice($result, 1, count($result)) : false;
     }

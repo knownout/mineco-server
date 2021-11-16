@@ -16,9 +16,10 @@ $file = MetadataHandler::requestData("file", $_GET);
 if (isset($extensionIcon)) // Get icon for file extension, if exist
 {
     global $ExtensionIconsPath;
+    $extensionIcon = mb_strtolower($extensionIcon);
 
     $iconFileName = null;
-    foreach (array_diff(scandir($ExtensionIconsPath), [".", "..", "unknown.png"]) as $icon)
+    foreach (array_diff(scandir($ExtensionIconsPath), [ ".", "..", "unknown.png" ]) as $icon)
     {
         $filename = pathinfo($icon)["filename"];
         $regex = "/(" . str_replace(",", "|", $filename) . ").{0,1}$/";

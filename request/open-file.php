@@ -20,7 +20,6 @@ if (isset($extensionIcon)) // Get icon for file extension, if exist
     $iconFileName = null;
     foreach (array_diff(scandir($ExtensionIconsPath), [".", "..", "unknown.png"]) as $icon)
     {
-        $k += 1;
         $filename = pathinfo($icon)["filename"];
         $regex = "/(" . str_replace(",", "|", $filename) . ").{0,1}$/";
 

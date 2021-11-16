@@ -92,6 +92,7 @@ class FilesHandler extends AccountsController
 
         global $UserContentPath;
         $path = $UserContentPath . date("m-Y") . DIRECTORY_SEPARATOR;
+        if (!is_dir($path)) mkdir($path);
 
         $fileName = time() . "@" . $file["name"];
         if (isset($file["error"]) and $file["error"] > 0)

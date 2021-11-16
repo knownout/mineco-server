@@ -54,4 +54,7 @@ class RequestActionsList
 
     /** @var string update property value in database */
     public const updateProperty = "13";
+
+    /** @var string remove file from user storage */
+    public const removeFile = "14";
 }

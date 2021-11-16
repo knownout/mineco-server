@@ -189,6 +189,25 @@ class ModificationHandler extends AccountsController
         StandardLibrary::returnJsonOutput(true, [ "material" => $material, "affect" => $affectResult ]);
     }
 
+    public function removeFile ()
+    {
+        [ $verification ] = parent::verifyWithPostData();
+        if (!$verification) StandardLibrary::returnJsonOutput(false, "auth data invalid");
+
+        $fileName = MetadataHandler::requestData(RequestTypesList::FileName);
+        $fileDate = MetadataHandler::requestData(RequestTypesList::FileDate);
+
+        global $UserContentPath;
+        if (!isset($fileName) or !isset($fileDate))
+            StandardLibrary::returnJsonOutput(false, "file data invalid");
+
+        if (!file_exists($UserContentPath . $fileDate . DIRECTORY_SEPARATOR . $fileName))
+            StandardLibrary::returnJsonOutput(false, "file not exist " . $UserContentPath . $fileDate . DIRECTORY_SEPARATOR . $fileName);
+
+        unlink($UserContentPath . $fileDate . DIRECTORY_SEPARATOR . $fileName);
+        StandardLibrary::returnJsonOutput(true, "file removed");
+    }
+
     /**
      * Fully remove material from drive and database
      *
@@ -224,7 +243,7 @@ class ModificationHandler extends AccountsController
     {
         [ $verification ] = parent::verifyWithPostData();
 
-        if(!$verification) StandardLibrary::returnJsonOutput(false, "auth data invalid");
+        if (!$verification) StandardLibrary::returnJsonOutput(false, "auth data invalid");
 
         $property = MetadataHandler::requestData(RequestTypesList::Property);
         $value = MetadataHandler::requestData(RequestTypesList::PropertyValue);

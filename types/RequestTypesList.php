@@ -23,6 +23,9 @@ class RequestTypesList
     public const Property = "Database:Property";
     public const PropertyValue = "Database:PropertyValue";
 
+    public const FileName = "File:Name";
+    public const FileDate = "File:Date";
+
     public const UpdateIdentifier = "Update:Identifier";
     public const UpdateContent = "Update:Content";
     public const UpdatePinned = "Update:Pinned";

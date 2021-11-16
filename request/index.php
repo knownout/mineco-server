@@ -89,6 +89,12 @@ switch ($request)
     case RequestActionsList::getFullMaterial:
         return $metadataHandler->getFullMaterial();
 
+    case RequestActionsList::removeFile:
+        $captcha = MetadataHandler::verifyCaptchaRequest();
+        if (!$captcha) StandardLibrary::returnJsonOutput(false, "recaptcha verification failed");
+
+        return $modificationHandler->removeFile();
+
     /** Google recaptcha token verification */
 
     case RequestActionsList::verifyCaptchaRequest:

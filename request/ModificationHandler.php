@@ -189,6 +189,9 @@ class ModificationHandler extends AccountsController
         StandardLibrary::returnJsonOutput(true, [ "material" => $material, "affect" => $affectResult ]);
     }
 
+    /**
+     * Remove file from the user content storage
+     */
     public function removeFile ()
     {
         [ $verification ] = parent::verifyWithPostData();

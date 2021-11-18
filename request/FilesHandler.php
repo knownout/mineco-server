@@ -70,7 +70,7 @@ class FilesHandler extends AccountsController
 
                 // Write to data tree
                 $fileSystem[$directory][$file] = [
-                    "extension" => $info["extension"],
+                    "extension" => mb_strtolower($info["extension"]),
                     "name" => $info["filename"],
                     "size" => stat($local . $file)["size"]
                 ];

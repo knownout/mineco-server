@@ -9,6 +9,7 @@ use Controllers\StandardLibrary;
 StandardLibrary::setCorsHeaders();
 
 $extensionIcon = MetadataHandler::requestData("extension_icon", $_GET);
+$image = MetadataHandler::requestData("image", $_GET);
 
 $date = MetadataHandler::requestData("date", $_GET);
 $file = MetadataHandler::requestData("file", $_GET);
@@ -41,6 +42,19 @@ if (isset($extensionIcon)) // Get icon for file extension, if exist
     {
         header("Content-type: image/png");
         readfile($ExtensionIconsPath . $iconFileName);
+    }
+
+} else if (isset($image))
+{
+    global $ImagesPath;
+    $path = $ImagesPath . $image;
+
+    if (!file_exists($path) or explode("/", mime_content_type($path))[0] != "image")
+        http_response_code(404);
+    else
+    {
+        header("Content-type: " . mime_content_type($path));
+        readfile($path);
     }
 } else if (isset($date) and isset($file)) // Check if required data specified by user
 {

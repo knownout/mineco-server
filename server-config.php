@@ -17,7 +17,7 @@ const DatabaseOptions = [
 ];
 
 global $MaterialsPath, $UserContentPath, $ImageSize, $ImageQuality, $AllowAllOrigins, $CaptchaSecretKey,
-       $ExtensionIconsPath;
+       $ExtensionIconsPath, $ImagesPath;
 
 $MaterialsPath = join(DIRECTORY_SEPARATOR, [ $_SERVER["DOCUMENT_ROOT"], "user-content", "" ]);
 
@@ -38,6 +38,9 @@ $AllowAllOrigins = true;
 
 // Path to file extensions icons folder
 $ExtensionIconsPath = join(DIRECTORY_SEPARATOR, [ $_SERVER["DOCUMENT_ROOT"], "public", "file-extensions", "" ]);
+
+// Path to images directory
+$ImagesPath = join(DIRECTORY_SEPARATOR, [ $_SERVER["DOCUMENT_ROOT"], "public", "images", "" ]);
 
 if (!is_dir($MaterialsPath)) mkdir($MaterialsPath);
 if (!is_dir($UserContentPath)) mkdir($UserContentPath);

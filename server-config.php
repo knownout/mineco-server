@@ -17,7 +17,7 @@ const DatabaseOptions = [
 ];
 
 global $MaterialsPath, $UserContentPath, $ImageSize, $ImageQuality, $AllowAllOrigins, $CaptchaSecretKey,
-       $ExtensionIconsPath, $ImagesPath;
+       $ExtensionIconsPath, $ImagesPath, $TempFolder;
 
 $MaterialsPath = join(DIRECTORY_SEPARATOR, [ $_SERVER["DOCUMENT_ROOT"], "user-content", "" ]);
 
@@ -42,8 +42,12 @@ $ExtensionIconsPath = join(DIRECTORY_SEPARATOR, [ $_SERVER["DOCUMENT_ROOT"], "pu
 // Path to images directory
 $ImagesPath = join(DIRECTORY_SEPARATOR, [ $_SERVER["DOCUMENT_ROOT"], "public", "images", "" ]);
 
+$TempFolder = join(DIRECTORY_SEPARATOR, [ $_SERVER["DOCUMENT_ROOT"], "request", "temp", "" ]);
+
 if (!is_dir($MaterialsPath)) mkdir($MaterialsPath);
 if (!is_dir($UserContentPath)) mkdir($UserContentPath);
+
+if(!is_dir($TempFolder)) mkdir($TempFolder);
 
 // Secret keys stored in file, ignored by git
 $CaptchaSecretKey = FileController::decodeJsonString(

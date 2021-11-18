@@ -1,15 +1,18 @@
 <?php
 
 require_once "../controllers/StandardLibrary.php";
+require_once "../controllers/FileController.php";
 require_once "../request/MetadataHandler.php";
 require_once "../server-config.php";
 
+use Controllers\FileController;
 use Controllers\StandardLibrary;
 
 StandardLibrary::setCorsHeaders();
 
 $extensionIcon = MetadataHandler::requestData("extension_icon", $_GET);
 $image = MetadataHandler::requestData("image", $_GET);
+$stub = MetadataHandler::requestData("stub", $_GET);
 
 $date = MetadataHandler::requestData("date", $_GET);
 $file = MetadataHandler::requestData("file", $_GET);
@@ -58,7 +61,7 @@ if (isset($extensionIcon)) // Get icon for file extension, if exist
     }
 } else if (isset($date) and isset($file)) // Check if required data specified by user
 {
-    global $UserContentPath;
+    global $UserContentPath, $TempFolder;
     $path = $UserContentPath . $date . DIRECTORY_SEPARATOR . $file;
 
     // If file not exist, return 404
@@ -72,14 +75,22 @@ if (isset($extensionIcon)) // Get icon for file extension, if exist
         {
             // Open image
             header("Content-type: {$mime}");
-            readfile($path);
+
+            if (isset($stub) and $stub == "true")
+            {
+                $stubFilePath = $TempFolder . time() . "@" . $file;
+                FileController::resizeImage($path, $stubFilePath, 50, 25);
+                readfile($stubFilePath);
+
+                unlink($stubFilePath);
+            } else readfile($path);
         } else
         {
             // Download file
-            header('Content-Disposition: attachment; filename=' . $file);
+            header("Content-Disposition: attachment; filename=" . $file);
 
             // Downloading on Android might fail without this
-            header('Content-Type: application/octet-stream');
+            header("Content-type: {$mime}");
             ob_clean();
 
             readfile($path);

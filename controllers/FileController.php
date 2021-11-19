@@ -81,9 +81,10 @@ class FileController
      * @param int $maxWidth maximum width of final image (value 0 - width is optional)
      * @param int $maxHeight maximum height of final image (value 0 - height is optional)
      * @param int $quality quality of final image (0-100)
+     * @param bool $force if true, width and height will be overwritten
      * @return bool
      */
-    public static function resizeImage ($sourceImage, $targetImage, $maxWidth, $maxHeight, $quality = 85)
+    public static function resizeImage ($sourceImage, $targetImage, $maxWidth, $maxHeight, $quality = 85, $force = false)
     {
         // Obtain image from given source file.
         if (!$image = @imagecreatefromjpeg($sourceImage)) return false;
@@ -94,7 +95,7 @@ class FileController
         if ($maxWidth == 0) $maxWidth = $origWidth;
         if ($maxHeight == 0) $maxHeight = $origHeight;
 
-        if ($origHeight < $maxHeight and $origWidth < $maxWidth) return true;
+        if ($origHeight < $maxHeight and $origWidth < $maxWidth and !$force) return true;
 
 
         // Calculate ratio of desired maximum sizes and original sizes.
@@ -104,9 +105,16 @@ class FileController
         // Ratio used for calculating new image dimensions.
         $ratio = min($widthRatio, $heightRatio);
 
-        // Calculate new image dimensions.
-        $newWidth = (int)$origWidth * $ratio;
-        $newHeight = (int)$origHeight * $ratio;
+        if (!$force)
+        {
+            // Calculate new image dimensions.
+            $newWidth = (int)$origWidth * $ratio;
+            $newHeight = (int)$origHeight * $ratio;
+        } else
+        {
+            $newWidth = $maxWidth;
+            $newHeight = $maxHeight;
+        }
 
         // Create final image with new dimensions.
         $newImage = imagecreatetruecolor($newWidth, $newHeight);

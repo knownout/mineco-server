@@ -78,8 +78,12 @@ if (isset($extensionIcon)) // Get icon for file extension, if exist
 
             if (isset($stub) and $stub == "true")
             {
+                [ $width, $height ] = getimagesize($path);
+
                 $stubFilePath = $TempFolder . time() . "@" . $file;
-                FileController::resizeImage($path, $stubFilePath, 50, 25);
+                FileController::resizeImage($path, $stubFilePath, 50, 50, 30);
+                FileController::resizeImage($stubFilePath, $stubFilePath, $width, $height, 20, true);
+
                 readfile($stubFilePath);
 
                 unlink($stubFilePath);

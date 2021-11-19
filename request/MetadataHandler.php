@@ -66,6 +66,8 @@ class MetadataHandler extends MaterialRequestController
         $timeEnd = $post(RequestTypesList::DataTimeEnd);
         $offset = $post(RequestTypesList::DataOffset);
 
+        $short = $post(RequestTypesList::DataShort);
+
         $identifier = $post(RequestTypesList::DataIdentifier);
 
         // Check if limit is specified and safely convert limit value to integer
@@ -84,6 +86,7 @@ class MetadataHandler extends MaterialRequestController
             if (!is_null($timeEnd)) $options->time_end = (int)$escape($timeEnd);
             if (!is_null($tag)) $options->tag = $escape($tag);
             if (!is_null($offset)) $options->offset = (int)$escape($offset);
+            if (!is_null($short)) $options->short = $escape($short);
         }
 
         $materials = parent::requestMaterials($options, $limit);

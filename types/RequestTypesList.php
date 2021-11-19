@@ -17,6 +17,7 @@ class RequestTypesList
     public const DataTimeEnd = "Data:TimeEnd";
     public const DataIdentifier = "Data:Identifier";
     public const DataOffset = "Data:Offset";
+    public const DataShort = "Data:Short";
 
     public const CaptchaToken = "Captcha:ResponseToken";
 

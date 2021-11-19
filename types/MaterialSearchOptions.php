@@ -15,6 +15,12 @@ class MaterialSearchOptions
     public ?string $title = null;
 
     /**
+     * Specify a short material content in db
+     * @var string|null
+     */
+    public ?string $short = null;
+
+    /**
      * Specify the time to search for materials whose publication
      * is greater than or equal to this
      *

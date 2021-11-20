@@ -91,7 +91,9 @@ if (isset($extensionIcon)) // Get icon for file extension, if exist
         } else
         {
             // Download file
-            header("Content-Disposition: attachment; filename=" . $file);
+            $filenameArray = explode("@", $file);
+            header("Content-Disposition: attachment; filename="
+                . join("@", array_slice($filenameArray, 1, count($filenameArray))));
 
             // Downloading on Android might fail without this
             header("Content-type: {$mime}");

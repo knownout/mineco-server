@@ -94,7 +94,8 @@ class ModificationHandler extends AccountsController
             RequestTypesList::UpdateTitle,
             RequestTypesList::UpdateTime,
             RequestTypesList::UpdateTags,
-            RequestTypesList::UpdateShort
+            RequestTypesList::UpdateShort,
+            RequestTypesList::UpdatePreview
         ];
 
         // Add data to tags list and placeholders for results list

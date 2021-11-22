@@ -118,7 +118,7 @@ class MetadataHandler extends MaterialRequestController
         if ($validation !== true) StandardLibrary::returnJsonOutput(false, $validation);
         else
         {
-            $material = $this->requestMaterialByIdentifier($identifier, [ "title", "tags", "time" ]);
+            $material = $this->requestMaterialByIdentifier($identifier);
             if (is_null($material)) StandardLibrary::returnJsonOutput(false, "no material database entry");
 
             StandardLibrary::returnJsonOutput(true, [

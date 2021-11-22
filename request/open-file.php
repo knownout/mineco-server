@@ -86,7 +86,8 @@ if (isset($extensionIcon)) // Get icon for file extension, if exist
 
                 readfile($stubFilePath);
 
-                unlink($stubFilePath);
+                @unlink($stubFilePath);
+                @unlink($stubFilePath);
             } else readfile($path);
         } else
         {

@@ -180,6 +180,8 @@ class ModificationHandler extends AccountsController
 
         // Shortcut for new identifier if exist
         $newIdentifier = $affect[RequestTypesList::UpdateIdentifier];
+        if (!is_null($newIdentifier))
+            rename($MaterialsPath . $identifier . ".json", $MaterialsPath . $newIdentifier . ".json");
 
         // Write action to database
         $this->logger->saveAction(

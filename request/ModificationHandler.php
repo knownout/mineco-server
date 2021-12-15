@@ -110,7 +110,18 @@ class ModificationHandler extends AccountsController
 
         // Get material metadata
         $material = $this->controller->requestMaterialByIdentifier($identifier);
-        if (is_null($material)) StandardLibrary::returnJsonOutput(false, "material not found");
+        if (is_null($material))
+        {
+            $this->connection->query(
+                "INSERT INTO materials (identifier, title, tags, short, time, pinned, preview) VALUES ('{$affect[RequestTypesList::UpdateIdentifier]}', '{$affect[RequestTypesList::UpdateTitle]}', '{$affect[RequestTypesList::UpdateTags]}', '{$affect[RequestTypesList::UpdateShort]}', {$affect[RequestTypesList::UpdateTime]}, {$affect[RequestTypesList::UpdatePinned]}, '{$affect[RequestTypesList::UpdatePreview]}')"
+            );
+
+            global $MaterialsPath;
+            $materialsPath = $MaterialsPath . $affect[RequestTypesList::UpdateIdentifier] . ".json";
+
+            file_put_contents($materialsPath, MetadataHandler::requestData(RequestTypesList::UpdateContent));
+            StandardLibrary::returnJsonOutput(true, "material created");
+        }
 
         // Function to compare specified tags data with current material data
         $compare = function (string $key) use ($material, $affect, $transform)

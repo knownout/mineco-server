@@ -1,3 +1,5 @@
 /user-content/
 /user-storage/
 /secret-keys.json
+*-options.json
+*/**/*-keys.json

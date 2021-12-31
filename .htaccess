@@ -28,7 +28,7 @@ FallbackResource /
 </IfModule>
 
 RewriteEngine On
-RewriteRule ^(controllers) - [R=404,L]
+RewriteRule ^(lib) - [R=404,L]
 RewriteRule ^(types) - [R=404,L]
-RewriteRule ^(request) - [R=404,L]
+RewriteRule ^(app) - [R=404,L]
 RewriteEngine Off

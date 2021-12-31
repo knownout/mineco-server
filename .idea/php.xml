@@ -5,6 +5,11 @@
       <path value="" />
     </include_path>
   </component>
+  <component name="PhpProjectServersManager">
+    <servers>
+      <server host="localhost" id="bc0d0e63-f3f0-4976-aa11-554434ed64f8" name="localhost" />
+    </servers>
+  </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="7.4" />
   <component name="PhpRuntimeConfiguration">
     <extensions>
@@ -47,7 +52,6 @@
       <extension name="oauth" enabled="false" />
       <extension name="pdflib" enabled="false" />
       <extension name="pthreads" enabled="false" />
-      <extension name="radius" enabled="false" />
       <extension name="rar" enabled="false" />
       <extension name="redis" enabled="false" />
       <extension name="rrd" enabled="false" />

@@ -11,6 +11,9 @@ program to update the web infrastructure of my current
 place of work (Ministry of Agriculture and Natural 
 Resources of Transnistria)
 
+Development process can be viewed using Trello (English):
+https://trello.com/b/bxHZAERt/mineco-server
+
 ## Серверная часть веб-приложения для Министерства сельского хозяйства и природных ресурсов Приднестровья
 
 Данный проект является серверной частью (бэк-эндом) для веб-приложения
@@ -21,6 +24,9 @@ Resources of Transnistria)
 _Проект создан на основе чистого PHP версии 7.4 без использования
 каких-либо фреймворков и внешних библиотек (не считая
 стандартные плагины PHP)_
+
+Процесс разработки можно отслеживать при помощи Trello (английский):
+https://trello.com/b/bxHZAERt/mineco-server
 
 https://ecology-pmr.org/ - Министерство сельского хозяйства и природных
 ресурсов Приднeстровья<br>

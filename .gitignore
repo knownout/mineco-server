@@ -3,3 +3,4 @@
 /secret-keys.json
 *-options.json
 */**/*-keys.json
+/storage/

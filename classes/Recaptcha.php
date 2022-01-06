@@ -2,17 +2,20 @@
 
 namespace Classes;
 
+/**
+ * Class for verification Google reCAPTCHA client tokens
+ */
 class Recaptcha {
     private ?string $secretKey = null;
 
     public function __construct () {
-        $keys = json_decode(file_get_contents("recaptcha-keys.json"), true);
+        $keys = json_decode(file_get_contents(dirname(__DIR__) . "/app/auth/recaptcha-keys.json"), true);
         if (array_key_exists("secretKey", $keys))
             $this->secretKey = $keys["secretKey"];
     }
 
-    public function verifyScore (string $token, $minScore = 0.5): bool {
-        if (is_null($this->secretKey)) return false;
+    public function verifyScore (?string $token, $minScore = 0.5): bool {
+        if (is_null($this->secretKey) or !isset($token)) return false;
 
         $data = [
             "secret" => $this->secretKey,

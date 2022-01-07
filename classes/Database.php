@@ -2,6 +2,10 @@
 
 namespace Classes;
 
+/**
+ * Class for creating connection to the database using
+ * file with hostname, password, etc
+ */
 class Database {
     public \mysqli $mysqli;
     public function connectToDatabase (): bool {

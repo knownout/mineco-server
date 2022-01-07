@@ -2,19 +2,32 @@
 
 namespace Classes;
 
+require_once $_SERVER["DOCUMENT_ROOT"] . "/classes/PathBuilder.php";
+
 /**
  * Class for verification Google reCAPTCHA client tokens
  */
 class Recaptcha {
     private ?string $secretKey = null;
 
+    // Get Google reCAPTCHA secret key
     public function __construct () {
-        $keys = json_decode(file_get_contents(dirname(__DIR__) . "/app/auth/recaptcha-keys.json"), true);
+        $container = new \PathBuilder();
+        $keysFileLocation = $container->makePath($container->root, "app", "auth", "recaptcha-keys.json");
+
+        $keys = json_decode(file_get_contents($keysFileLocation), true);
         if (array_key_exists("secretKey", $keys))
             $this->secretKey = $keys["secretKey"];
     }
 
-    public function verifyScore (?string $token, $minScore = 0.5): bool {
+    /**
+     * Verify user request by its score
+     *
+     * @param string|null $token request client token
+     * @param float $minScore minimum request score to be accepted
+     * @return bool verification result
+     */
+    public function verifyScore (?string $token, float $minScore = 0.5): bool {
         if (is_null($this->secretKey) or !isset($token)) return false;
 
         $data = [

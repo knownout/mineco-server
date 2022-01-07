@@ -7,7 +7,7 @@ use Classes\Database;
 use function Lib\makeOutput;
 
 /**
- * Shortcut for connection to the database
+ * Superstructure over the Database class
  *
  * @return Database|void
  */

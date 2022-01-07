@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Endpoint for searching files in the
+ * Endpoint for searching variables in the
  * database
  *
  * Returns common json output with database
@@ -30,12 +30,7 @@ useCorsHeaders();
 useOutputHeader();
 
 // Build query with filename form POST request
-$queryBuilder = new QueryBuilder("files");
-// Parse all possible POST requests
-
-$constants = (new ReflectionClass(new FileSearchRequests()))->getConstants();
-foreach ($constants as $key => $constant) $queryBuilder->addFromPost($constant[0], $constant[1]);
-
+$queryBuilder = new QueryBuilder("variables");
 $queryBuilder->addFromPost(...FileSearchRequests::fileName);
 
 $queryBuilder->orderBy("identifier")->setLimitFromPost(CommonSearchRequests::limit);

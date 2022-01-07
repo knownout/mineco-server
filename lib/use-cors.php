@@ -2,6 +2,13 @@
 
 namespace Lib;
 
+/**
+ * Function for attaching CORS headers
+ *
+ * @author slashingweapon
+ * @link https://stackoverflow.com/a/9866124
+ * @return void
+ */
 function useCorsHeaders() {
 
     // Allow from any origin

@@ -2,14 +2,22 @@
 
 namespace Types;
 
-class PostRequests {
+/**
+ * Common server POST requests list
+ */
+class Requests {
     public const recaptchaToken = "recaptchaToken";
     public const accountLogin = "accountLogin";
     public const accountHash = "accountHash";
     public const uploadFile = "uploadFile";
+    public const getFilePreview = "getFilePreview";
 }
 
-class MaterialSearchPostRequests {
+/**
+ * POST requests for searching materials in the database
+ * with /app/materials/search endpoint
+ */
+class MaterialSearchRequests {
     public const title = ["title like", "%find:materialTitle%"];
     public const description = [ "description like", "%find:materialDescription%" ];
 
@@ -21,10 +29,23 @@ class MaterialSearchPostRequests {
     public const identifier = ["identifier =", "find:materialIdentifier"];
 }
 
-class FilesSearchPostRequests {
+/**
+ * POST requests for searching files in the database
+ * with /app/files/search endpoint
+ */
+class FileSearchRequests {
     public const fileName = ["filename like", "%find:fileName%"];
+
+    public const datetimeFrom = [ "datetime >=", "find:fileDatetimeFrom" ];
+    public const datetimeTo = ["datetime <=", "find:fileDatetimeTo"];
+    public const identifier = ["identifier =", "find:fileIdentifier"];
+
+    public const extension = ["extension like", "%find:fileExtension%"];
 }
 
-class CommonSearchPostRequests {
+/**
+ * Common server search POST requests for all search endpoints
+ */
+class CommonSearchRequests {
     public const limit = "find:limit";
 }

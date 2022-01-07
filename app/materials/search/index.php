@@ -1,5 +1,12 @@
 <?php
 
+/**
+ * Endpoint for searching materials in the database
+ *
+ * Returns common json output with filename with
+ * database entries as associative arrays
+ */
+
 require_once $_SERVER["DOCUMENT_ROOT"] . "/classes/QueryBuilder.php";
 require_once $_SERVER["DOCUMENT_ROOT"] . "/classes/Search.php";
 
@@ -15,18 +22,20 @@ use function Lib\useCorsHeaders;
 use function Lib\makeOutput;
 use function Lib\useOutputHeader;
 
-use Types\CommonSearchPostRequests;
-use Types\MaterialSearchPostRequests;
+use Types\CommonSearchRequests;
+use Types\MaterialSearchRequests;
 
 useCorsHeaders();
 useOutputHeader();
 
 $queryBuilder = new QueryBuilder("materials");
 
-$constants = (new ReflectionClass(new MaterialSearchPostRequests))->getConstants();
+// Parse all possible POST requests
+$constants = (new ReflectionClass(new MaterialSearchRequests))->getConstants();
 foreach ($constants as $key => $constant) {
+    // Specific logic for tags request (parse like array)
     if ($key === "tags") {
-        $postValue = $_POST[MaterialSearchPostRequests::tags];
+        $postValue = $_POST[MaterialSearchRequests::tags];
         if(!isset($postValue)) continue;
 
         $subQuery = [];
@@ -35,8 +44,8 @@ foreach ($constants as $key => $constant) {
 
         $queryBuilder->addQuery(join(" and ", $subQuery));
 
-    } else if($key === "content") {
-        $postValue = $_POST[MaterialSearchPostRequests::content];
+    } else if($key === "content") { // Specific login for the content request (search in description and title)
+        $postValue = $_POST[MaterialSearchRequests::content];
         if(!isset($postValue)) continue;
 
         $queryBuilder->addQuery("title like '%$postValue%' or description like '%$postValue%'");
@@ -44,10 +53,10 @@ foreach ($constants as $key => $constant) {
     else $queryBuilder->addFromPost($constant[0], $constant[1]);
 }
 
-$queryBuilder->orderBy("datetime");
-$queryBuilder->setLimitFromPost(CommonSearchPostRequests::limit);
+$queryBuilder->orderBy("datetime")->setLimitFromPost(CommonSearchRequests::limit);
 
-$response = (new Search($queryBuilder))->requireResponse(false);
+// Execute search with Search class
+$response = (new Search($queryBuilder))->execute();
 
 if(!$response) exit(makeOutput(false, [ "no-response" ]));
 exit(makeOutput(true, $response));

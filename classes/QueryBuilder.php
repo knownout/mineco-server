@@ -59,18 +59,42 @@ class QueryBuilder {
         return $this->addQuery($queryStart . " $value");
     }
 
-    public function orderBy (string $column, string $type = "desc") {
+    /**
+     * Set items order for the query
+     *
+     * @param string $column soring column
+     * @param string $type sorting type (desc or asc)
+     * @return QueryBuilder
+     */
+    public function orderBy (string $column, string $type = "desc"): QueryBuilder {
         $this->query .= " order by $column $type";
+        return $this;
     }
 
-    public function setLimit (int $limit, int $offset = 0) {
+    /**
+     * Set items limit for the query (client default - probably 30)
+     *
+     * @param int $limit number of maximum items
+     * @param int $offset limit offset
+     * @return QueryBuilder self
+     */
+    public function setLimit (int $limit, int $offset = 0): QueryBuilder {
         $this->query .= " limit $offset, $limit";
+        return $this;
     }
 
-    public function setLimitFromPost (string $key) {
+    /**
+     * Set items limit for the query from POST request
+     *
+     * @param string $key POST request key
+     * @return QueryBuilder self
+     */
+    public function setLimitFromPost (string $key): QueryBuilder {
         $value = intval($_POST[$key]);
         if(!isset($value) or !$value or $value > 200)
             $this->setLimit(200);
         else $this->setLimit($value);
+
+        return $this;
     }
 }

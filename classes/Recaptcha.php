@@ -12,8 +12,8 @@ class Recaptcha {
 
     // Get Google reCAPTCHA secret key
     public function __construct () {
-        $container = new \PathBuilder();
-        $keysFileLocation = $container->makePath($container->root, "app", "auth", "recaptcha-keys.json");
+        $pathBuilder = new PathBuilder();
+        $keysFileLocation = $pathBuilder->makePath($pathBuilder->root, "app", "auth", "recaptcha-keys.json");
 
         $keys = json_decode(file_get_contents($keysFileLocation), true);
         if (array_key_exists("secretKey", $keys))

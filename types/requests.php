@@ -11,6 +11,7 @@ class Requests {
     public const accountHash = "accountHash";
     public const uploadFile = "uploadFile";
     public const getFilePreview = "getFilePreview";
+    public const deleteFile = "deleteFile";
 }
 
 /**

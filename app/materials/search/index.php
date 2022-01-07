@@ -40,7 +40,7 @@ foreach ($constants as $key => $constant) {
 
         $subQuery = [];
         $tagQueryArray = explode(",", $postValue);
-        foreach ($tagQueryArray as $item) $subQuery[] = "tags like '%{$item}%'";
+        foreach ($tagQueryArray as $item) $subQuery[] = "tags like '%$item%'";
 
         $queryBuilder->addQuery(join(" and ", $subQuery));
 

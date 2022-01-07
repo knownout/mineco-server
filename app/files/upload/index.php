@@ -12,7 +12,9 @@ require_once $_SERVER["DOCUMENT_ROOT"] . "/lib/use-cors.php";
 require_once $_SERVER["DOCUMENT_ROOT"] . "/types/requests.php";
 require_once $_SERVER["DOCUMENT_ROOT"] . "/app/make-connection.php";
 require_once $_SERVER["DOCUMENT_ROOT"] . "/app/verify-account-data.php";
+require_once $_SERVER["DOCUMENT_ROOT"] . "/classes/PathBuilder.php";
 
+use Classes\PathBuilder;
 use function Lib\useOutputHeader;
 use function Lib\makeOutput;
 use function Lib\useCorsHeaders;
@@ -22,6 +24,8 @@ use Types\Requests;
 useCorsHeaders();
 useOutputHeader();
 
+$pathBuilder = new PathBuilder();
+
 $accountData = verifyAccountData();
 if (!$accountData) exit(makeOutput(false, [ "auth-failed" ]));
 
@@ -30,9 +34,10 @@ if (!isset($file) or !isset($file["name"])) exit(makeOutput(false, [ "no-file" ]
 
 $directory = $_SERVER["DOCUMENT_ROOT"] . "\\storage\\files-storage\\";
 $filename = $file["name"];
+$location = $pathBuilder->makePath($pathBuilder->fileStorage, $filename);
 
-if(file_exists($directory . $filename)) exit(makeOutput(false, [ "file-exist" ]));
-if (move_uploaded_file($file["tmp_name"], $directory . $filename)) {
+if(file_exists($location)) exit(makeOutput(false, [ "file-exist", $location ]));
+if (move_uploaded_file($file["tmp_name"], $location)) {
     $database = makeDatabaseConnection();
 
     $time = time();

@@ -1,13 +1,15 @@
 <?php
 
+namespace Classes;
+
 /**
  * Class for building paths to files and directories, also
  * provide some variables (like storage paths)
  */
 class PathBuilder {
     public string $root;
-    public string $fileStorage = "storage\\files-storage";
-    public string $materialsStorage = "storage\\materials-storage";
+    public string $fileStorage = "\\storage\\files-storage";
+    public string $materialsStorage = "\\storage\\materials-storage";
 
     public function __construct () {
         $this->root = $_SERVER["DOCUMENT_ROOT"];

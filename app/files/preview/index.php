@@ -13,6 +13,7 @@ require_once $_SERVER["DOCUMENT_ROOT"] . "/types/requests.php";
 require_once $_SERVER["DOCUMENT_ROOT"] . "/classes/Recaptcha.php";
 require_once $_SERVER["DOCUMENT_ROOT"] . "/lib/use-cors.php";
 
+use Classes\PathBuilder;
 use Classes\Recaptcha;
 use Types\Requests;
 use function Lib\useCorsHeaders;
@@ -39,7 +40,7 @@ if(!in_array($ext, [ "txt", "png", "jpeg", "jpg" ])) exit(http_response_code(404
 
 // Check if file exist
 $location = $container->makePath($container->fileStorage, $filename);
-if(!file_exists($location)) exit(http_response_code(404));
+if(!file_exists($location)) exit($location);
 
 header("Content-Length: " . filesize($location));
 header("Content-Type: " . mime_content_type($location));

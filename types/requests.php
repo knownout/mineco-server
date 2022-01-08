@@ -44,6 +44,11 @@ class FileSearchRequests {
     public const extension = ["extension like", "%find:fileExtension%"];
 }
 
+class VariableRequests {
+    public const update = "variable:updateVariable";
+    public const name = "variable:variableName";
+}
+
 /**
  * Common server search POST requests for all search endpoints
  */

@@ -18,7 +18,7 @@ use Classes\Recaptcha;
 use Types\Requests;
 use function Lib\useCorsHeaders;
 
-$container = new PathBuilder();
+$pathBuilder = new PathBuilder();
 
 // Get recaptcha token and target file name
 $token = $_POST[ Requests::recaptchaToken ];
@@ -39,7 +39,7 @@ $ext = pathinfo($filename)["extension"];
 if(!in_array($ext, [ "txt", "png", "jpeg", "jpg" ])) exit(http_response_code(404));
 
 // Check if file exist
-$location = $container->makePath($container->fileStorage, $filename);
+$location = $pathBuilder->makePath($pathBuilder->fileStorage, $filename);
 if(!file_exists($location)) exit($location);
 
 header("Content-Length: " . filesize($location));

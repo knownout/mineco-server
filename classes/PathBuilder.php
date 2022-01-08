@@ -8,14 +8,20 @@ namespace Classes;
  */
 class PathBuilder {
     public string $root;
-    public string $fileStorage = "\\storage\\files-storage";
-    public string $materialsStorage = "\\storage\\materials-storage";
+    public string $fileStorage = DIRECTORY_SEPARATOR . "storage" . DIRECTORY_SEPARATOR . "files-storage";
+    public string $materialsStorage = DIRECTORY_SEPARATOR . "storage" . DIRECTORY_SEPARATOR . "materials-storage";
 
     public function __construct () {
         $this->root = $_SERVER["DOCUMENT_ROOT"];
 
         $this->fileStorage = $_SERVER["DOCUMENT_ROOT"] . $this->fileStorage;
         $this->materialsStorage = $_SERVER["DOCUMENT_ROOT"] . $this->materialsStorage;
+
+        if (!file_exists($_SERVER["DOCUMENT_ROOT"] . DIRECTORY_SEPARATOR . "storage"))
+            mkdir($_SERVER["DOCUMENT_ROOT"] . DIRECTORY_SEPARATOR . "storage");
+
+        if (!file_exists($this->fileStorage)) mkdir($this->fileStorage);
+        if (!file_exists($this->materialsStorage)) mkdir($this->materialsStorage);
     }
 
     /**

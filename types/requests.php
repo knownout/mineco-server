@@ -13,6 +13,7 @@ class Requests {
     public const getFilePreview = "getFilePreview";
     public const deleteFile = "deleteFile";
     public const getMaterial = "getMaterial";
+    public const deleteMaterial = "deleteMaterial";
 }
 
 /**

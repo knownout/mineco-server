@@ -48,7 +48,7 @@ if (!file_exists($contentFilePath)) {
 }
 
 $materialData = $database->query("select * from materials where identifier='$identifier'")->fetch_assoc();
-$tagsList = $database->query("select name from tags")->fetch_all();
+$tagsList = $database->query("select name from tags order by identifier")->fetch_all();
 $contentFile = @json_decode(@file_get_contents($contentFilePath));
 if (!$materialData or !$contentFile or !isset($contentFile) or !$tagsList) {
     unlink($contentFilePath);

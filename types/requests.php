@@ -14,6 +14,9 @@ class Requests {
     public const deleteFile = "deleteFile";
     public const getMaterial = "getMaterial";
     public const deleteMaterial = "deleteMaterial";
+    public const updateMaterial = "material:updateIdentifier";
+    public const updateMaterialContent = "material:updateContent";
+    public const updateMaterialText = "material:updateText";
 }
 
 /**

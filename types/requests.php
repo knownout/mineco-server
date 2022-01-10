@@ -29,6 +29,7 @@ class MaterialSearchRequests {
 
     public const content = "find:materialContent";
     public const tags = "find:materialTags";
+    public const excludeTags = "find:materialExcludeTags";
 
     public const datetimeFrom = [ "datetime >=", "find:materialDatetimeFrom" ];
     public const datetimeTo = ["datetime <=", "find:materialDatetimeTo"];

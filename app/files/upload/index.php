@@ -33,7 +33,7 @@ $file = $_FILES[ Requests::uploadFile ];
 if (!isset($file) or !isset($file["name"])) exit(makeOutput(false, [ "no-file" ]));
 
 $directory = $_SERVER["DOCUMENT_ROOT"] . "\\storage\\files-storage\\";
-$filename = $file["name"];
+$filename = pathinfo($file["name"])["filename"] . "." . strtolower(pathinfo($file["name"])["extension"]);
 $location = $pathBuilder->makePath($pathBuilder->fileStorage, $filename);
 
 if(file_exists($location)) exit(makeOutput(false, [ "file-exist", $location ]));

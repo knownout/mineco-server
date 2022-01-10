@@ -12,6 +12,7 @@ require_once $_SERVER["DOCUMENT_ROOT"] . "/classes/PathBuilder.php";
 require_once $_SERVER["DOCUMENT_ROOT"] . "/types/requests.php";
 require_once $_SERVER["DOCUMENT_ROOT"] . "/classes/Recaptcha.php";
 require_once $_SERVER["DOCUMENT_ROOT"] . "/lib/use-cors.php";
+require_once $_SERVER["DOCUMENT_ROOT"] . "/app/make-connection.php";
 
 use Classes\PathBuilder;
 use Classes\Recaptcha;
@@ -40,7 +41,11 @@ if(!in_array($ext, [ "txt", "png", "jpeg", "jpg" ])) exit(http_response_code(404
 
 // Check if file exist
 $location = $pathBuilder->makePath($pathBuilder->fileStorage, $filename);
-if(!file_exists($location)) exit($location);
+if(!file_exists($location)) {
+    $database = makeDatabaseConnection();
+    $database->query("delete from files where filename='$filename'");
+    exit($location);
+}
 
 header("Content-Length: " . filesize($location));
 header("Content-Type: " . mime_content_type($location));

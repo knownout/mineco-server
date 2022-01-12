@@ -34,6 +34,7 @@ $database = makeDatabaseConnection();
 if (!$database) exit(makeOutput(false, [ "no-database-connection" ]));
 
 $query = $database->query("update variables set value='$value' where name='$variable'");
+$database->mysqli->close();
 if (!$query) exit(makeOutput(false, [ "query-error" ]));
 
 exit(makeOutput(true, $value));

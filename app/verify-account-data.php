@@ -31,7 +31,9 @@ function verifyAccountData() {
     $database = makeDatabaseConnection();
 
     $query = $database->query("SELECT login,hash,fullname FROM accounts WHERE active=1 AND login='$login'");
+    $database->mysqli->close();
     if (!$query) return false;
+
 
     // Compare database user hash with provided hash
     $accountData = $query->fetch_assoc();

@@ -23,8 +23,8 @@ use function Lib\useOutputHeader;
 $pathBuilder = new PathBuilder();
 
 // Get recaptcha token and target file name
-$token = $_POST[ Requests::recaptchaToken ];
-$identifier = $_POST[ Requests::getMaterial ];
+$token = $_POST[Requests::recaptchaToken];
+$identifier = $_POST[Requests::getMaterial];
 
 // Attach CORS headers
 useCorsHeaders();
@@ -36,9 +36,25 @@ if (!isset($identifier) or !isset($token)) exit(makeOutput(false, [ "no-data-pro
 $recaptchaVerify = (new Recaptcha())->verifyScore($token);
 if (!$recaptchaVerify) exit(http_response_code(404));
 
-$contentFilePath = $pathBuilder->makePath($pathBuilder->materialsStorage, $identifier . ".json");
 $database = makeDatabaseConnection();
 if (!$database) exit(makeOutput(false, [ "no-database-connection" ]));
+
+$tagsList = $database->query("select name from tags order by identifier")->fetch_all();
+
+$parsedTagsList = [];
+foreach ($tagsList as $item) $parsedTagsList[] = $item[0];
+
+if ($identifier === "create-new") {
+    exit(makeOutput(true, [ "data" => [
+        "identifier" => "", "title" => "",
+        "tags" => "", "description" => "",
+        "preview" => "_default-minecoBuilding.jpg",
+        "datetime" => "" . time(), "pinned" => "0",
+        "attachments" => ""
+    ], "content" => "", "tags" => $parsedTagsList ]));
+}
+
+$contentFilePath = $pathBuilder->makePath($pathBuilder->materialsStorage, $identifier . ".json");
 
 // Check if both database entry and content file exist
 // If not, there is some cleaning mechanism
@@ -48,14 +64,12 @@ if (!file_exists($contentFilePath)) {
 }
 
 $materialData = $database->query("select * from materials where identifier='$identifier'")->fetch_assoc();
-$tagsList = $database->query("select name from tags order by identifier")->fetch_all();
+$database->mysqli->close();
+
 $contentFile = @json_decode(@file_get_contents($contentFilePath));
-if (!$materialData or !$contentFile or !isset($contentFile) or !$tagsList) {
+if (!$materialData or !$contentFile or !isset($contentFile)) {
     unlink($contentFilePath);
     exit(makeOutput(false, [ "no-database-entry-or-file" ]));
 }
-
-$parsedTagsList = [];
-foreach ($tagsList as $item) $parsedTagsList[] = $item[0];
 
 exit(makeOutput(true, [ "data" => $materialData, "content" => $contentFile, "tags" => $parsedTagsList ]));

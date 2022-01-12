@@ -29,6 +29,7 @@ $database = makeDatabaseConnection();
 if(!$database) exit(makeOutput(false, [ "database-error" ]));
 
 $query = $database->query("delete from files where filename='$filename'");
+$database->mysqli->close();
 if(!$query) exit(makeOutput(false, [ "query-error" ]));
 
 $location = $pathBuilder->makePath($pathBuilder->fileStorage, $filename);

@@ -44,6 +44,7 @@ $location = $pathBuilder->makePath($pathBuilder->fileStorage, $filename);
 if(!file_exists($location)) {
     $database = makeDatabaseConnection();
     $database->query("delete from files where filename='$filename'");
+    $database->mysqli->close();
     exit($location);
 }
 

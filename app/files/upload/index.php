@@ -47,6 +47,7 @@ if (move_uploaded_file($file["tmp_name"], $location)) {
         "INSERT INTO files (filename,datetime,extension) VALUES ('$filename',$time,'$extension')"
     );
 
+    $database->mysqli->close();
     if($result) exit(makeOutput(true, $filename));
     else exit(makeOutput(false, [ "database-insert-error" ]));
 }

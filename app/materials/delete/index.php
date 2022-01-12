@@ -33,6 +33,7 @@ $database = makeDatabaseConnection();
 if(!$database) exit(makeOutput(false, [ "database-error" ]));
 
 $query = $database->query("delete from materials where identifier='$identifier'");
+$database->mysqli->close();
 $location = $pathBuilder->makePath($pathBuilder->materialsStorage, $identifier . ".json");
 if(file_exists($location) and is_file($location))
     unlink($location);

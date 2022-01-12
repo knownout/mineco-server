@@ -44,7 +44,10 @@ class Search {
         $database = makeDatabaseConnection();
 
         $query = $database->query($this->queryBuilder->query);
-        if (!$query) return false;
+        if (!$query) {
+            $database->mysqli->close();
+            return false;
+        }
 
         $response = [];
 

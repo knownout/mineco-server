@@ -23,18 +23,18 @@ use function Lib\useOutputHeader;
 $pathBuilder = new PathBuilder();
 
 // Get recaptcha token and target file name
-$token = $_POST[Requests::recaptchaToken];
+//$token = $_POST[Requests::recaptchaToken];
 $identifier = $_POST[Requests::getMaterial];
 
 // Attach CORS headers
 useCorsHeaders();
 useOutputHeader();
 
-if (!isset($identifier) or !isset($token)) exit(makeOutput(false, [ "no-data-provided" ]));
+if (!isset($identifier)) exit(makeOutput(false, [ "no-data-provided" ]));
 
 // Verify request with Google reCAPTCHA token
-$recaptchaVerify = (new Recaptcha())->verifyScore($token);
-if (!$recaptchaVerify) exit(http_response_code(404));
+//$recaptchaVerify = (new Recaptcha())->verifyScore($token);
+//if (!$recaptchaVerify) exit(http_response_code(404));
 
 $database = makeDatabaseConnection();
 if (!$database) exit(makeOutput(false, [ "no-database-connection" ]));

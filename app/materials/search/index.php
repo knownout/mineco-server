@@ -56,7 +56,7 @@ foreach ($constants as $key => $constant) {
 $queryBuilder->orderBy("datetime")->setLimitFromPost(CommonSearchRequests::limit);
 
 // Execute search with Search class
-$response = (new Search($queryBuilder))->execute();
+$response = (new Search($queryBuilder))->execute(false);
 
 if (!$response) exit(makeOutput(false, [ "no-response" ]));
 exit(makeOutput(true, $response));

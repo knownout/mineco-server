@@ -34,6 +34,7 @@ class MaterialSearchRequests {
     public const datetimeFrom = [ "datetime >=", "find:materialDatetimeFrom" ];
     public const datetimeTo = ["datetime <=", "find:materialDatetimeTo"];
     public const identifier = ["identifier =", "find:materialIdentifier"];
+    public const pinned = ["pinned =", "find:materialPinned"];
 }
 
 /**

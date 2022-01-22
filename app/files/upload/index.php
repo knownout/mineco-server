@@ -29,26 +29,46 @@ $pathBuilder = new PathBuilder();
 $accountData = verifyAccountData();
 if (!$accountData) exit(makeOutput(false, [ "auth-failed" ]));
 
-$file = $_FILES[ Requests::uploadFile ];
+$file = $_FILES[Requests::uploadFile];
 if (!isset($file) or !isset($file["name"])) exit(makeOutput(false, [ "no-file" ]));
 
 $directory = $_SERVER["DOCUMENT_ROOT"] . "\\storage\\files-storage\\";
-$filename = pathinfo($file["name"])["filename"] . "." . strtolower(pathinfo($file["name"])["extension"]);
+$filename = date("m-Y") . "\/"
+    . pathinfo($file["name"])["filename"] . "." . strtolower(pathinfo($file["name"])["extension"]);
+
 $location = $pathBuilder->makePath($pathBuilder->fileStorage, $filename);
 
-if(file_exists($location)) exit(makeOutput(false, [ "file-exist", $location ]));
+if (file_exists($location)) exit(makeOutput(false, [ "file-exist", $location ]));
+
+$directoryPath = $pathBuilder->makePath($pathBuilder->fileStorage, date("m-Y"));
+if (!file_exists($directoryPath)) mkdir($directoryPath);
+
 if (move_uploaded_file($file["tmp_name"], $location)) {
     $database = makeDatabaseConnection();
 
     $time = time();
-    $extension = $file["extension"];
+
+    $filenameArray = explode(".", $filename);
+    $extension = end($filenameArray);
+
+    if (in_array($extension, [ "jpg", "png", "jpeg" ])) {
+        [ $width ] = getimagesize($location);
+
+        if($width > 1280) {
+            if (in_array($extension, [ "jpg", "jpeg" ])) $image = imagecreatefromjpeg($location);
+            else $image = imagecreatefrompng($location);
+
+            $scaledImage = imagescale($image, 1280);
+            if (in_array($extension, [ "jpg", "jpeg" ])) imagejpeg($scaledImage, $location, 85);
+            else imagepng($scaledImage, $location, 90);
+        }
+    }
 
     $result = $database->query(
         "INSERT INTO files (filename,datetime,extension) VALUES ('$filename',$time,'$extension')"
     );
 
     $database->mysqli->close();
-    if($result) exit(makeOutput(true, $filename));
+    if ($result) exit(makeOutput(true, $filename));
     else exit(makeOutput(false, [ "database-insert-error" ]));
-}
-else exit(makeOutput(false, [ "upload-error", $file, $directory ]));
+} else exit(makeOutput(false, [ "upload-error", $file, $directory ]));

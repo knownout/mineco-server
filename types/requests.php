@@ -53,7 +53,8 @@ class FileSearchRequests {
 
 class VariableRequests {
     public const update = "variable:updateVariable";
-    public const name = "variable:variableName";
+    public const rawName = "variable:variableName";
+    public const name = ["name like", "%variable:variableName%"];
 }
 
 /**

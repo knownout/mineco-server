@@ -27,7 +27,7 @@ $pathBuilder = new PathBuilder();
 $accountData = verifyAccountData();
 if (!$accountData) exit(makeOutput(false, [ "auth-failed" ]));
 
-$variable = $_POST[ VariableRequests::name ];
+$variable = $_POST[ VariableRequests::rawName ];
 $value = $_POST[ VariableRequests::update ];
 
 $database = makeDatabaseConnection();

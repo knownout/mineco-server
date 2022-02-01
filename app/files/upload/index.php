@@ -60,15 +60,19 @@ if (move_uploaded_file($file["tmp_name"], $location)) {
 
             $scaledImage = imagescale($image, 1280);
             if (in_array($extension, [ "jpg", "jpeg" ])) imagejpeg($scaledImage, $location, 85);
-            else imagepng($scaledImage, $location, 90);
+            else imagepng($scaledImage, $location);
         }
     }
 
+
     $result = $database->query(
-        "INSERT INTO files (filename,datetime,extension) VALUES ('$filename',$time,'$extension')"
+        "INSERT INTO files (filename,datetime,extension) VALUES ('$filename','$time','$extension')"
     );
 
     $database->mysqli->close();
     if ($result) exit(makeOutput(true, $filename));
-    else exit(makeOutput(false, [ "database-insert-error" ]));
+    else {
+        unlink($location);
+        exit(makeOutput(false, [ "database-insert-error" ]));
+    }
 } else exit(makeOutput(false, [ "upload-error", $file, $directory ]));

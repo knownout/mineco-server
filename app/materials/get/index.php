@@ -39,7 +39,10 @@ if (!isset($identifier)) exit(makeOutput(false, [ "no-data-provided" ]));
 $database = makeDatabaseConnection();
 if (!$database) exit(makeOutput(false, [ "no-database-connection" ]));
 
-$tagsList = $database->query("select name from tags order by identifier")->fetch_all();
+$query = $database->query("select name from tags order by identifier");
+if(!$query) exit(makeOutput(false, [ "query-fail" ]));
+
+$tagsList = $query->fetch_all();
 
 $parsedTagsList = [];
 foreach ($tagsList as $item) $parsedTagsList[] = $item[0];

@@ -20,6 +20,23 @@ class Requests {
 }
 
 /**
+ * POST requests for sending mails through web forms
+ */
+class FormRequests {
+    public const sendTo = "form:sendTo";
+    public const attachments = "form:attachments";
+
+    public const text = "form:text";
+    public const subject = "form:subject";
+
+    public const name = "form:name";
+    public const address = "form:address";
+
+    public const phone = "form:phone";
+    public const email = "form:email";
+}
+
+/**
  * POST requests for searching materials in the database
  * with /app/materials/search endpoint
  */

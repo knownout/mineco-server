@@ -1,0 +1,17 @@
+{
+    "name": "re-knownout/mineco-server",
+    "description": "Server part of the web application of the Ministry of Agriculture and Natural Resources of Transnistria",
+    "minimum-stability": "stable",
+    "license": "AGPL-3.0 License",
+    "authors": [
+        {
+            "name": "re-knownout",
+            "email": "knownout@hotmail.com"
+        }
+    ],
+    "require": {
+        "phpmailer/phpmailer": "^6.5",
+        "ext-mysqli": "*",
+        "ext-json": "*"
+    }
+}

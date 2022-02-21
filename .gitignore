@@ -5,3 +5,5 @@
 */**/*-keys.json
 /storage/files-storage/*
 /storage/materials-storage/*
+/composer.phar
+/vendor/

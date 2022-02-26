@@ -53,7 +53,8 @@ foreach ($constants as $key => $constant) {
     } else $queryBuilder->addFromPost($constant[0], $constant[1]);
 }
 
-$queryBuilder->orderBy("datetime")->setLimitFromPost(CommonSearchRequests::limit);
+$offset = $_POST[CommonSearchRequests::offset];
+$queryBuilder->orderBy("datetime")->setLimitFromPost(CommonSearchRequests::limit, intval($offset));
 
 // Execute search with Search class
 $response = (new Search($queryBuilder))->execute(false);

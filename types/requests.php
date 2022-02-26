@@ -79,4 +79,5 @@ class VariableRequests {
  */
 class CommonSearchRequests {
     public const limit = "find:limit";
+    public const offset = "find:offset";
 }

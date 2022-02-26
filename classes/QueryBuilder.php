@@ -89,11 +89,11 @@ class QueryBuilder {
      * @param string $key POST request key
      * @return QueryBuilder self
      */
-    public function setLimitFromPost (string $key): QueryBuilder {
+    public function setLimitFromPost (string $key, $offset = 0): QueryBuilder {
         $value = intval($_POST[$key]);
         if(!isset($value) or !$value or $value > 200)
-            $this->setLimit(200);
-        else $this->setLimit($value);
+            $this->setLimit(200, $offset);
+        else $this->setLimit($value, $offset);
 
         return $this;
     }

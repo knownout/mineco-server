@@ -34,6 +34,8 @@ class FormRequests {
 
     public const phone = "form:phone";
     public const email = "form:email";
+
+    public const target = "form:target";
 }
 
 /**

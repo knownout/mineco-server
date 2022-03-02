@@ -27,8 +27,8 @@ useCorsHeaders();
 
 $token = $_POST[Requests::recaptchaToken];
 
-$recaptchaVerify = (new Recaptcha())->verifyScore($token);
-if (!$recaptchaVerify) exit(makeOutput(false, [ "no-recaptcha" ]));
+//$recaptchaVerify = (new Recaptcha())->verifyScore($token);
+//if (!$recaptchaVerify) exit(makeOutput(false, [ "no-recaptcha" ]));
 
 
 $mailer = new SendMail();
@@ -39,7 +39,7 @@ if (!key_exists($_POST[FormRequests::sendTo], $mailer->associations))
 $sendTo = $mailer->associations[$_POST[FormRequests::sendTo]];
 $attachments = $_FILES[FormRequests::attachments];
 
-$subject = $_POST[FormRequests::subject];
+//$subject = $_POST[FormRequests::subject];
 $text = $_POST[FormRequests::text];
 
 $name = $_POST[FormRequests::name];
@@ -48,16 +48,18 @@ $address = $_POST[FormRequests::address];
 $phone = $_POST[FormRequests::phone];
 $email = $_POST[FormRequests::email];
 
-if (!$sendTo or !$subject or !$text or !$name or !$address)
+$target = ($_POST[FormRequests::target] ?? "Обращение к");
+
+if (!$sendTo or !$text or !$name or !$address)
     exit(makeOutput(false, [ "no-data" ]));
 
 // Parse mail template
 $template = new MailTemplateParser();
 
-$template->addTitle("Обращение к министру");
+$template->addTitle("$target [" . $_POST[FormRequests::sendTo] . "]");
 $template->addUserData($name, $address, $phone ?? "Не указан", $email ?? "Не указан");
 $template->addMessageText($text);
-$template->addSubject($subject);
+//$template->addSubject($subject);
 
 // Send mail
 $mailer->sendMail([ $sendTo ], [], $template->title, $template->template);

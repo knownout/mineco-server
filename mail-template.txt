@@ -1,9 +1,7 @@
 #{message-title} при помощи формы обратной связи на сайте <a href="http://ecology-pmr.org/">ecology-pmr.org</a>
-<hr /><b>ФИО:</b> #{name}
+<br /><b>ФИО:</b> #{name}
 <b>Адрес:</b> #{address}
 <b>Телефон:</b> #{phone}
 <b>E-Mail:</b> #{email}
-<hr /><b>Тема сообщения:</b>
-#{message-subject}
-<hr /><b>Текст сообщения:</b>
+<br /><b>Текст сообщения:</b>
 #{message-text}

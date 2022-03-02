@@ -38,7 +38,7 @@ class SendMail
         return @json_decode(@file_get_contents($path), true);
     }
 
-    public function sendMail (array $to, array $attachments, string $subject, string $body)
+    public function sendMail (array $to, array $attachments, string $subject, string $body): bool
     {
         $mail = $this->mail;
         if (is_null($this->authData)) return false;
@@ -52,6 +52,9 @@ class SendMail
             $mail->Password = $this->authData["password"];
             $mail->SMTPSecure = $this->authData["encryption"];
             $mail->Port = $this->authData["port"];
+
+            $mail->CharSet = "UTF-8";
+            $mail->Encoding = "base64";
 
             //Recipients
             $mail->setFrom($this->authData["address"]);

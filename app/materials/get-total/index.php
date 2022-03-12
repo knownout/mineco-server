@@ -14,13 +14,17 @@ use function Lib\useOutputHeader;
 useCorsHeaders();
 useOutputHeader();
 
-$tag = $_POST[MaterialSearchRequests::tags];
+$tag = $_POST[ MaterialSearchRequests::tags ];
 
 $database = makeDatabaseConnection();
 if (!$database) exit(makeOutput(false, [ "no-database-connection" ]));
 
 $stringQuery = "select count(*) from materials where datetime < " . time();
-if (isset($tag)) $stringQuery .= " and tags like '%$tag%'";
+
+if (isset($tag)) {
+    if ($tag === "NOT_EMPTY") $stringQuery .= " and tags != ''";
+    else $stringQuery .= " and tags like '%$tag%'";
+}
 
 $query = $database->query($stringQuery);
 if (!$query) exit(makeOutput(false, [ "query-fail" ]));

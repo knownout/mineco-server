@@ -36,7 +36,11 @@ $directory = $_SERVER["DOCUMENT_ROOT"] . "\\storage\\files-storage\\";
 $filename = date("m-Y") . "\/"
     . pathinfo($file["name"])["filename"] . "." . strtolower(pathinfo($file["name"])["extension"]);
 
-$location = $pathBuilder->makePath($pathBuilder->fileStorage, $filename);
+$filename = date("m-Y") . DIRECTORY_SEPARATOR
+    . str_replace("&", "", str_replace(" ", "-", pathinfo($file["name"])["filename"])) . "."
+    . strtolower(pathinfo($file["name"])["extension"]);
+
+$location = $pathBuilder->makePath($pathBuilder->fileStorage, str_replace(" ", "-", $filename));
 
 if (file_exists($location)) exit(makeOutput(false, [ "file-exist", $location ]));
 

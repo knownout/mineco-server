@@ -22,11 +22,12 @@ if (!$database) exit(makeOutput(false, [ "no-database-connection" ]));
 $stringQuery = "select count(*) from materials where datetime < " . time();
 
 if (isset($tag)) {
-    if ($tag === "NOT_EMPTY") $stringQuery .= " and tags != ''";
+    if ($tag === "NOT_EMPTY") $stringQuery .= " and tags not like ''";
     else $stringQuery .= " and tags like '%$tag%'";
 }
 
 $query = $database->query($stringQuery);
+file_put_contents("t.txt", $tag);
 if (!$query) exit(makeOutput(false, [ "query-fail" ]));
 
 $materialsCount = $query->fetch_row();

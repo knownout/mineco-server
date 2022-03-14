@@ -17,15 +17,13 @@ ErrorDocument 403 /
     Deny from all
 </Files>
 
+<Files "manifest.json">
+    Order Deny,Allow
+    Deny from all
+</Files>
+
 DirectoryIndex index.html
 FallbackResource /
-
-<IfModule mpm_winnt_module>
-    ThreadsPerChild      150
-    MaxRequestsPerChild    0
-    #Win32DisableAcceptEx
-    SendBufferSize 131072
-</IfModule>
 
 RewriteEngine On
 RewriteRule ^(lib) - [R=404,L]

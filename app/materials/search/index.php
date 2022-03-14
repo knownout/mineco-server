@@ -18,6 +18,7 @@ require_once $_SERVER["DOCUMENT_ROOT"] . "/types/requests.php";
 use Classes\QueryBuilder;
 use Classes\Search;
 
+use Types\Requests;
 use function Lib\useCorsHeaders;
 use function Lib\makeOutput;
 use function Lib\useOutputHeader;
@@ -32,9 +33,15 @@ $queryBuilder = new QueryBuilder("materials");
 
 // Parse all possible POST requests
 $constants = (new ReflectionClass(new MaterialSearchRequests))->getConstants();
+
 foreach ($constants as $key => $constant) {
     // Specific logic for tags request (parse like array)
-    if ($key === "tags" or $key === "excludeTags") {
+    if($key === "excludeEmpty") {
+        if(!isset($_POST[Requests::excludeEmpty])) continue;
+
+        $queryBuilder->addQuery("tags not like ''");
+    }
+    elseif ($key === "tags" or $key === "excludeTags") {
         $request = $key === "tags" ? MaterialSearchRequests::tags : MaterialSearchRequests::excludeTags;
         $postValue = $_POST[$request];
         if (!isset($postValue)) continue;
@@ -45,7 +52,7 @@ foreach ($constants as $key => $constant) {
 
         $queryBuilder->addQuery(join(" and ", $subQuery));
 
-    } else if ($key === "content") { // Specific login for the content request (search in description and title)
+    } elseif ($key === "content") { // Specific login for the content request (search in description and title)
         $postValue = $_POST[MaterialSearchRequests::content];
         if (!isset($postValue)) continue;
 

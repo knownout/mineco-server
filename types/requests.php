@@ -17,6 +17,7 @@ class Requests {
     public const updateMaterial = "material:updateIdentifier";
     public const updateMaterialContent = "material:updateContent";
     public const updateMaterialText = "material:updateText";
+    public const excludeEmpty = "material:excludeEmpty";
 }
 
 /**
@@ -54,6 +55,8 @@ class MaterialSearchRequests {
     public const datetimeTo = ["datetime <=", "find:materialDatetimeTo"];
     public const identifier = ["identifier =", "find:materialIdentifier"];
     public const pinned = ["pinned =", "find:materialPinned"];
+
+    public const excludeEmpty = "excludeEmpty";
 }
 
 /**

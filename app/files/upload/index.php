@@ -33,11 +33,10 @@ $file = $_FILES[Requests::uploadFile];
 if (!isset($file) or !isset($file["name"])) exit(makeOutput(false, [ "no-file" ]));
 
 $directory = $_SERVER["DOCUMENT_ROOT"] . "\\storage\\files-storage\\";
-$filename = date("m-Y") . "\/"
-    . pathinfo($file["name"])["filename"] . "." . strtolower(pathinfo($file["name"])["extension"]);
 
 $filename = date("m-Y") . DIRECTORY_SEPARATOR
-    . str_replace("&", "", str_replace(" ", "-", pathinfo($file["name"])["filename"])) . "."
+    . str_replace("&", "", str_replace(" ", "-", pathinfo($file["name"])["filename"]))
+    . "@" . date('mdy-his') . "."
     . strtolower(pathinfo($file["name"])["extension"]);
 
 $location = $pathBuilder->makePath($pathBuilder->fileStorage, str_replace(" ", "-", $filename));
